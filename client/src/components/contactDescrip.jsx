@@ -9,9 +9,10 @@ import { ClearUser } from "../Store/AuthUser";
 
 import { makeToast } from "../simpleFunctions";
 import { useRef } from "react";
-
+import svg from '../assets/imag.png'
 import axios from "axios";
 import { useState } from "react";
+import store from "../Store/store";
 const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 
 
@@ -66,8 +67,9 @@ export const MenuBar=()=>{
     const navigate=useNavigate();
     const dispatch=useDispatch();
     // for checking Login status...
-
     // const logRef =useRef(null);
+    const {profilePic}=useSelector((store)=>store.User);
+    console.log(profilePic);
 
     const isLoggedin=useSelector((store)=>store.User.isLoggedin);
     console.log(isLoggedin);
@@ -108,9 +110,14 @@ export const MenuBar=()=>{
                         })
                     }
             </div>
+            <div className=" w-full gap-3 justify-center flex flex-col items-center">
             <div onMouseEnter={()=>setHover(true)}  onMouseLeave={()=>setHover(false)} className="relative   flex hover:cursor-pointer hover:opacity-90  w-full justify-center" onClick={handleClick}>
                     {
-                        isLoggedin ? <LogOutIc /> : <LoginIc />
+                        isLoggedin ? (
+                            <div className="flex flex-col w-full gap-6 mb-2 items-center">
+                                <LogOutIc />
+                            </div>
+                        ): <LoginIc />
                     }
                     {
                         isHover && (
@@ -123,6 +130,15 @@ export const MenuBar=()=>{
                             </div>
                         )
                     }
+            </div>
+           {
+            isLoggedin &&
+            <Link to={"/profile"}>
+                <div className="h-12 w-12 rounded-full z-30 overflow-hidden">
+                                    <img src={profilePic?VITE_BACKURL+profilePic:svg} className="object-cover border-[1.5px] border-slate-300 rounded-full" />
+                </div>
+            </Link>
+           }
             </div>
         </div>
     )

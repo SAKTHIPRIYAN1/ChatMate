@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import svg from "../assets/imag.png";
 import { PencilIcon,CheckIcon } from "./svg";
 const VITE_BACKURL=import.meta.env.VITE_BACKURL;
@@ -7,23 +7,36 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import { makeToast } from "../simpleFunctions";
 import { CameraIcon } from "./svg";
+import { setUser, setUserImage } from "../Store/AuthUser";
+import { useNavigate } from "react-router-dom";
+
+// import { useDispatch } from "react-redux";
 
 const ProfileComponent=()=>{
-
+  const dispatch=useDispatch();
   const fileRef=useRef(null);
+  const {profilePic,isLoggedin}=useSelector((store)=>store.User);
+
+   
+const navigate=useNavigate();
+  
+  useEffect(()=>{
+    if(!isLoggedin)
+      navigate("/");
+  },[dispatch,isLoggedin])
   // Store Contents.....
   const {name,id,email} =useSelector((store)=>store.User);
 
-  const {profilePic}=useSelector((store)=>store.User);
+
 
     const [isEditing, setIsEditing] = useState(false);
     const [newName, setName] = useState(name);
-    const [image,setImage]=useState(VITE_BACKURL+profilePic || svg );
+    const [image,setImage]=useState(profilePic?VITE_BACKURL+profilePic: svg );
      
     const handleEdit = () => setIsEditing(true);
     const handleChange = (e) => setName(e.target.value);
     const hoverClass=isEditing?"border-teal-400  ":"border-slate-500" ;
-
+   
     
 
 const handleNameChange=async()=>{
@@ -75,6 +88,7 @@ const handleNameChange=async()=>{
             withCredentials:true,
         });
         setImage(VITE_BACKURL+resp.data.filePath);
+        dispatch(setUserImage(resp.data.filePath));
         console.log(image);
         console.log('File successfully uploaded:', resp.data);
       }
@@ -94,7 +108,7 @@ const handleNameChange=async()=>{
                 <div className="relative overflow-hidden  bg-gray-700 group  flex justify-center items-center h-max  rounded-full w-max">
                 <img 
                   className="h-[180px] w-[180px] object-cover border-[2px] border-slate-500 rounded-full " 
-                  src={image} 
+                  src={image?image:svg} 
                   alt="Profile Picture" 
                   draggable="false"
                 />

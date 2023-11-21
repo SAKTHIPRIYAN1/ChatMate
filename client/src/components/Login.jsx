@@ -59,7 +59,7 @@ const LoginPart=()=>{
         console.log(id,pass);
         try{
             setLoading(true);
-            const res=await axios.post(VITE_BACKURL+"/login",{id,password:pass,Auth},{
+            const res=await axios.post(VITE_BACKURL+"/login",{id:id.toLowerCase(),password:pass,Auth},{
                 withCredentials: true,
             });
             console.log(res);

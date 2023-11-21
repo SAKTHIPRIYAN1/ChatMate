@@ -43,9 +43,31 @@ export const GetContactMessages = createAsyncThunk(
         } catch (err) {
             console.error(err);
             return rejectWithValue("Error occurred while retrieving messages");
+
+            
         }
     }
 );
+
+// export const GetContactPic=createAsyncThunk("Contact/GetContactMessages",async (_, { getState, rejectWithValue }) => {
+//     try{
+//         const state=getState();
+//         const Auth=state.Contact.Auth;
+//         if(!Auth){
+//             return rejectWithValue("No Auth");
+//         }
+//         const res = await axios.post(`${apiUrl}/profile/getPic`,{user_id:Auth}, {
+//             withCredentials: true,
+//         });
+
+//         const {profile}=res.data;
+//         return profile;
+
+//     }catch(err){
+//         console.log(err);
+//         return rejectWithValue("Error occurred while retrieving ");
+//     }
+// })
 
 
 const ContactSlice= createSlice(
@@ -62,7 +84,7 @@ const ContactSlice= createSlice(
         },
         setMessages:(state,action)=>{
             state.Messages.push(action.payload);
-            console.log(state.Messages);
+            console.log(action.payload);
         }
     },
 
@@ -80,7 +102,8 @@ const ContactSlice= createSlice(
              .addCase(GetContactMessages.rejected, (state, action) => {
                        state.load=false;
                     
-            });
+            })
+
     }
    }
 );

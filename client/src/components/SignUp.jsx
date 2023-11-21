@@ -67,7 +67,7 @@ const SignForm=()=>{
 
             try{
                 setLoading(true);
-                const res=await axios.post(VITE_BACKURL+"/signUp",{name,email,password:pass,id},{
+                const res=await axios.post(VITE_BACKURL+"/signUp",{name:name.toLowerCase(),email,password:pass,id},{
                     withCredentials: true,
                 });
                 console.log(res.data.msg);

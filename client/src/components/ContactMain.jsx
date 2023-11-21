@@ -73,6 +73,24 @@ const ContactComponent=()=>{
 const Contact=({el})=>{
     
     console.log(el);
+    const [pr,setPr]=useState(null);
+    useEffect(()=>{
+        async function fet() {
+            try{
+                const res = await axios.post(`${VITE_BACKURL}/profile/getPic`,{user_id:el.Auth}, {
+                    withCredentials: true,
+                });
+                const {profile}=res.data;
+                if(profile)
+                    setPr(profile);
+            }
+            catch(err){
+                console.log(err);
+            }
+        }
+
+        fet();
+    },[])
 
     const dispatch=useDispatch();
 
@@ -97,8 +115,8 @@ const Contact=({el})=>{
     return (
        <div className=" hover:cursor-pointer hover:bg-slate-700/30 h-max max-h-[100px] border-b-[1px] border-b-slate-700 py-[15px]    flex gap-2 pr-0 pl-0 " onClick={handelContactClick}>
         <div className="ml-3 flex h-max gap-2 items-center self-center  w-full"> 
-            <div className="h-14 w-14 rounded-full border-[1px] border-slate-500 ">
-              <img src={el.profile? VITE_IMAGE_BACKURL+"/"+el.profile : svg } alt="ll" />
+            <div className="h-14 w-14 overflow-hidden rounded-full border-[1px] border-slate-500 bg-black ">
+              <img src={pr? VITE_IMAGE_BACKURL+"/"+pr : svg } alt="ll" className=""/>
             </div>
             <div className="flex flex-col h-full  justify-center">
                 <h1 className="font-bold text-white text-lg">{el.name}</h1>

@@ -119,7 +119,7 @@ export const SocketProvider = ({ children }) => {
 
             newSocket.on("ChatMessage",({sender,receiver,chatId,message})=>{
                 console.log(sender,receiver,chatId,message);
-                dispatch(setMessages({isYou:sender==Auth,mess:message,isFile:false}));
+                dispatch(setMessages({isYou:sender?.toLowerCase()==Auth?.toLowerCase(),mess:message,isFile:false}));
 
             })
 

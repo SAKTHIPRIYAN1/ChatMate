@@ -4,6 +4,9 @@ import RandomPass from "../CustomHooks/RandomPass";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_BACKURL;
+const imgUrl=import.meta.env.VITE_IMG;
+
+
 const initialState={
     email:null,
     id:null,
@@ -73,13 +76,19 @@ const User=createSlice({
            state.id=id;
            state.accessToken=accessToken;
            state.isLoggedin=true;
-           state.profilePic=profile;
+           if(profile){
+              state.profilePic=imgUrl+"/"+profile;
+              console.log("prz;",profile);
+           }
            console.log(profile);
         },
         setUserAuth:(state,action)=>{
             console.log(action.payload);
             state.Auth=action.payload;
             // console.log("Auth:",state.Auth);
+        },
+        setUserImage:(state,action)=>{
+          state.profilePic=action.payload;
         },
         setNameAccess:(state,action)=>{
           state.name=action.payload.name;
@@ -94,6 +103,7 @@ const User=createSlice({
           state.Auth=null;
          state.AnnonPass=null;
           state.load=true;
+          state.profilePic=null;
         }
     },
     extraReducers: (builder) => {
@@ -127,6 +137,6 @@ const User=createSlice({
       },
 });
 
-export const {setUser,setUserAuth,ClearUser} =User.actions;
+export const {setUser,setUserAuth,ClearUser,setUserImage} =User.actions;
 export const selectAuth = (state) => state.User.Auth;
 export default User.reducer;
