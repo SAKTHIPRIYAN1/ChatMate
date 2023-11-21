@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 import ClipIc from "./svg";
-import { Similey } from "./svg";
+import { Similey,VerticalDotsIcon } from "./svg";
 import ConcatDescrip from "./contactDescrip";
 import { SendIc } from "./svg";
 import ChatTimer from "./ChatTimer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useRef ,useLayoutEffect} from "react";
 import { useState,useEffect } from "react";
@@ -21,6 +21,8 @@ import { ClearAnnonRecip } from "../Store/AnonymousUser";
 import { setDesVisible } from '../Store/AnnonDesslice';
 // Arrow....
 import { ArrowLeftIcon } from "./svg";
+
+
 
 // import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -55,6 +57,9 @@ const MessagePart=()=>{
     const dispatch=useDispatch();
     const {socket}=useSocket();
 
+    const location = useLocation();
+    const { isAnnon } = location.state || {};
+
     
 
     useLayoutEffect(()=>{
@@ -78,16 +83,14 @@ const MessagePart=()=>{
 
     
     
-    return (
-        
-            <MessComp />
-      
+    return (   
+            <MessComp isAnnon={isAnnon}/>
       );
 
    
 }
 
-export const MessComp=()=>{
+export const MessComp=({isAnnon})=>{
     const {loading}=useLoading();
     if(loading){
         console.log("loadingggg....");
@@ -97,13 +100,13 @@ export const MessComp=()=>{
     return(
         <div className="h-[100vh]   w-[100vw] fixed right-0 left-0 top-0  gap-0 border-none  bg  p-0 flex">
             <ConcatDescrip  />
-            <MessContain />
+            <MessContain isAnnon={isAnnon}/>
         </div>
         
     )
 }
 
-export const MessContain=()=>{
+export const MessContain=({isAnnon})=>{
     const ChatPerson=useSelector((store)=>store.AnnRecip.recipName);
     const mainRef=useRef(null);
     const [ScrollToBottom,setScrollBotttom]=useState(false);
@@ -121,7 +124,7 @@ export const MessContain=()=>{
     return(
         <div className="h-full w-[70%]  sm:w-[100%] relative ">
         <MessHead ChatPerson={ChatPerson}/>
-        <MainChat reff={mainRef} ChatPerson={ChatPerson}/>
+        <MainChat reff={mainRef} ChatPerson={ChatPerson} isAnnon={isAnnon} />
         <TyperDiv  scrollfunc={setScrollBotttom} />
         </div>
     )
@@ -166,10 +169,98 @@ export const MessHead=({ChatPerson,noTimer})=>{
                 </h1>
            </div>
             {
-                noTimer || <ChatTimer /> 
+                noTimer ?  <Contactopton/>:<ChatTimer /> 
             }
         </div>
     )
+}
+
+const Contactopton=()=>{
+    const [isShowopton,setShowoption]=useState(false);
+
+    const UserId=useSelector((store)=>store.User.Auth);
+    console.log(UserId);
+    const RecipId=useSelector((store)=>store.Contact.Auth);
+
+
+    const showInfo=()=>{
+        console.log("Info Showing");
+    }
+
+    const deleteChat=async ()=>{
+        try{
+            const res=await axios.post(VITE_BACKURL+"/contact/deleteMess",{
+                userAuth:UserId,
+                RecipAuth:RecipId,
+            },{withCredentials:true});
+            console.log(res.data.msg);
+        }
+        catch(err){
+            console.log(err.response.data);
+        }
+    }
+
+    const Block=async ()=>{
+        try{
+            const res=await axios.post(VITE_BACKURL+"/contact/block",{
+                userAuth:UserId,
+                RecipAuth:RecipId,
+            },{withCredentials:true});
+            console.log(res.data.msg);
+        }
+        catch(err){
+            console.log(err.response.data);
+        }
+    }
+
+    var options=[
+        {name:"Contact Info",
+         func:showInfo
+        },
+
+        {name:"Delete Chat",
+            func:deleteChat
+        },
+
+        {name:"Block",
+            func:Block
+        },
+    ]
+
+    return (
+        <div className="h-[100%] justify-end items-center flex relative "   > 
+            <div onClick={()=>setShowoption(!isShowopton)} className="rounded-full p-2 hover:bg-transparent_blue h-9  flex items-center justify-center w-9 transition-all ">
+            <VerticalDotsIcon />
+            {
+                isShowopton && <div className='fixed top-11  bg-slate-900 p-2 right-5 z-30  '>
+                   <div className='flex gap-2 flex-col z[211]'>
+                        {
+                            options.map((el,ind)=>{
+                                return(
+                                    <ContactoptionsEach key={ind} name={el.name} func={el.func} />
+                                )
+                            })
+                        }
+                   </div>
+                </div>
+            }
+            </div>
+          </div>
+    )
+}
+
+const ContactoptionsEach=({name,func})=>{
+    
+    return(
+        <div className="bg-transparent w-full h-8 hover:bg-slate-800 p-3 flex
+        items-center justify-start hover:cursor-pointer " onClick={() => func()}
+>
+            <h2>
+                {name}
+            </h2>
+        </div>
+    )
+
 }
 
  const TyperDiv = ({scrollfunc}) => {

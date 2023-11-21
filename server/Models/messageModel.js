@@ -10,7 +10,7 @@ const MessageSchema = new mongoose.Schema({
   },
   sender: {
     type: String,
-    loercase:true,
+    lowercase:true,
     required: true,
     ref: "User",
   },

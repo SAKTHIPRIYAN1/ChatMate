@@ -6,6 +6,7 @@ import { changeProfilePic } from '../Controllers/profileController.js';
 
 import multer from 'multer';
 import path from 'path';
+import User from '../Models/UserModel.js';
 
 
 const storage = multer.diskStorage({
@@ -35,5 +36,22 @@ const profileRoute=e.Router();
 
 profileRoute.post('/changeName',changeNameController);
 profileRoute.post('/changeProfilePic',upload.single('file'),changeProfilePic);
+profileRoute.post('/getPic',async(req,res)=>{
+    if(!req.body)
+        return res.status(500).json({msg:"No data"});
+    const {user_id}=req.body;
+    if(!user_id)
+        return res.status(500).json({msg:"No User_id"});
+    try{
+        const user=await User.findOne({user_id});
+        if(!user)
+            return res.status(200);
+        const {profile}=user;
+        return res.status(200).json({profile});
+    }
+    catch(err){
+        return res.status(500).json({msg:err?.message});
+    }
+})
 
 export default profileRoute;

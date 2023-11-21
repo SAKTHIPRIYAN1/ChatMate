@@ -78,7 +78,7 @@ const HandleMenuOptions=(e)=>{
 
         {Options}
 
-      <div className="bg-teal-950/90 p-2 rounded-md flex flex-col max-w-[55%] pr-16 sm:max-w-[75%]">
+      <div className="bg-teal-950/90 p-2 rounded-md flex flex-col max-w-[55%] pr-10 sm:max-w-[75%]">
 
 
       {
@@ -127,7 +127,7 @@ const TheirMessContainer = ({ Mess,Main }) => {
     const OtherUserName = useSelector((store) => store.AnnRecip.recipName);
     const [isExpanded, setIsExpanded] = useState(false);
     const messageRef = useRef(null);
-  
+    const [Options,setOptions]=useState(false)
     const toggleReadMore = () => {
       setIsExpanded(!isExpanded);
     };
@@ -164,7 +164,7 @@ const TheirMessContainer = ({ Mess,Main }) => {
   
     return (
       <div className="flex items-center justify-start p-[3px] group  w-full h-auto cursor-pointer " ref={messageRef} >
-      <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%] relative pr-16  sm:max-w-[75%]">
+      <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%] relative pr-10  sm:max-w-[75%]">
       <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>{setOptions(!Options)}                           } > 
         <MenuDownIcon />
         </div>

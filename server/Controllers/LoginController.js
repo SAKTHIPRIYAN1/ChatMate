@@ -19,7 +19,7 @@ const LoginHandler=async (req,res)=>{
             httpOnly: true,
             secure: true,
             maxAge: 60 * 60 * 1000 *1000, // 10 days
-            sameSite: 'none',
+            sameSite: 'strict',
         });
 
         

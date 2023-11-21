@@ -101,7 +101,7 @@ const RegisterPart=()=>{
                 console.log(socketid);
                 dispatch(setUserSock(socketid));
                 setLoading(false);
-                navigate("/message");
+                navigate("/message",{state:{isAnnon:true}});
             } else {
                 setLoading(false);
                 toast.error("No Pair Found", {

@@ -15,8 +15,7 @@ const UserSchema=new Schema({
     email:{
         type: String,
         required: true,
-        // unique: true, 
-        lowercase: true,  
+        unique: true, 
         trim: true, 
 
     },
@@ -34,16 +33,17 @@ const UserSchema=new Schema({
     },
     profile:{
         type:String,
-        unique:true,
         trim:true
     }
     ,
-    contacts:[{name:{type:String,trim:true,lowercase:true,}, profile:{type:String,unique:true,trim:true},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
+    contacts:[{name:{type:String,trim:true,lowercase:true,}, profile:{type:String,trim:true},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
     notifications:[{type:String,trim:true,lowercase:true,}],
 },
 {
 timestamps:true,
 });
+
+
 
 
 UserSchema.statics.saveUser=async function (name,email,password,id) {

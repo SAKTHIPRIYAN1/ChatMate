@@ -6,26 +6,31 @@ import MessageContainer from "./messageContainer";
 import { GetContactMessages } from '../Store/ContactSlice';
 import { useSocket } from '../SocketContext';
 
-export const MainChat=({reff,ChatPerson})=>{
+export const MainChat=({reff,ChatPerson,isAnnon})=>{
     const dispatch=useDispatch();
 
     const AnnonMessages=useSelector((store)=>store.AnnonMess.messages); 
     const ContactMessages=useSelector((store)=>store.Contact.Messages);
     const Auth=useSelector((store)=>store.User.Auth);
 
-    const Messages= ContactMessages ? ContactMessages : AnnonMessages ;
+    
+   
+
     const id=useSelector((store)=>store.User.id);
     const isLoggedIn=Auth==id;
     const {socket}=useSocket();
 
+    // choosing the Messages for the messagePart....
+    const Messages= !isAnnon ? ContactMessages : AnnonMessages ;
+    console.log(AnnonMessages);
+    console.log("isAnnon",isAnnon);
     
     // contactAuth..
     const contactAuth=useSelector((store)=>store.Contact.Auth)
     useEffect(()=>{
         dispatch(GetContactMessages());
-        console.log("kk")
+   
         socket.emit("chat",{Auth});
-        console.log("ll");
         // preProcess the Messages......
     },[dispatch,contactAuth])
     

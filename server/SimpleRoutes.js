@@ -8,14 +8,13 @@ PreAuthRoute.post("/", async(req, res) => {
     const { Purpose } = req.body;
     console.log(Purpose);
     let finalData;
+    try{
     if (Purpose == "login") {
         const { refreshToken } = req.cookies;
 
         if (!refreshToken) {
             return res.status(401).json({ msg: "No refresh token provided." });
         }
-
-        
 
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,async(err, data) => {
             if (err) {
@@ -24,8 +23,10 @@ PreAuthRoute.post("/", async(req, res) => {
             finalData=data;
             console.log(data);
             console.log(finalData);
-            const {profile}=await User.findOne({user_id:finalData.id});
-            finalData["profile"]="/uploads/profilePic/"+profile;
+            const u=await User.findOne({user_id:finalData.id});
+            if(u){
+                finalData["profile"]=u.profile;
+            }
             return res.status(200).json({ data:finalData });
         });
 
@@ -47,7 +48,12 @@ PreAuthRoute.post("/", async(req, res) => {
 
         return res.status(200).json({ msg: "Password token verified." });
     }
+    }catch(err){
+        res.status(401);
+        console.log(err);
+    }
 });
+
 
 
 export default PreAuthRoute;

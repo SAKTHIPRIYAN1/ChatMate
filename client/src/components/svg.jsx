@@ -193,4 +193,17 @@ export const CameraIcon = ({ className = "w-6 h-6 " }) => {
   );
 };
 
+export const VerticalDotsIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 128 512"
+    width="18"
+    height="18"
+    className="fill-gray-300 hover:cursor-pointer"
+  >
+  
+    <path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z" />
+  </svg>
+);
+
 export default ClipIc;

@@ -15,7 +15,7 @@ LogoutRoute.get("/",async(req,res)=>{
     res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
+        sameSite: 'strict',
     });
 
     res.status(200).json({msg:"Logged Out Successfully"});
