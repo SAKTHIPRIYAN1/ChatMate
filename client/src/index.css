@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+    body{
+        /* @apply h-[100vh] w-[100vw]  overflow-hidden */
+        background-image:radial-gradient(145.05% 100% at 50% 0,#1d2b41 0,#020509 57.38%,#0f1a29 88.16%);
+        height:100vh;
+        width: 100vw;
+        color: whitesmoke;
+        font-family: sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+    
+}
+
+@layer utilities{
+    .fullas{
+        @apply h-[100vh] w-[100vw] overflow-hidden
+    }
+    .transparent_blue{
+        background-color: rgba(72, 84, 114, 0.315);
+    }
+    .transparent_tone{
+        background-color: rgba(38, 48, 72, 0.434);
+        opacity: 0.8;
+    }
+
+    .button1{
+        @apply flex   items-center justify-center active:scale-[0.96]  border-[1.5px]  px-12  py-1 text-[15px]  font-medium  rounded-md  leading-5 
+    }
+
+    .button1:hover{
+        @apply hover:font-[600] 
+    }
+}
