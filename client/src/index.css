@@ -5,7 +5,8 @@
 @layer base{
     body{
         /* @apply h-[100vh] w-[100vw]  overflow-hidden */
-        background-image:radial-gradient(145.05% 100% at 50% 0,#1d2b41 0,#020509 57.38%,#0f1a29 88.16%);
+        background-image:radial-gradient(145.05% 100% at 50% 0,#0f1724 0,#020509 57.38%,#080e18 88.16%);
+        /* background-color: #04032cee; */
         height:100vh;
         width: 100vw;
         color: whitesmoke;
@@ -17,6 +18,10 @@
 }
 
 @layer utilities{
+    .bg{
+        /* background-image:radial-gradient(145.05% 100% at 50% 0,#1d2b41 0,#020509 57.38%,#0f1a29 88.16%); */
+        /* background-color: #07101d; */
+    }
     .fullas{
         @apply h-[100vh] w-[100vw] overflow-hidden
     }
@@ -24,8 +29,13 @@
         background-color: rgba(72, 84, 114, 0.315);
     }
     .transparent_tone{
-        background-color: rgba(38, 48, 72, 0.434);
+        background-color: rgba(54, 58, 78, 0.521);
         opacity: 0.8;
+    }
+
+    .contactCon{
+        background-color:rgb(189, 157, 15);    
+
     }
 
     .button1{
@@ -34,5 +44,6 @@
 
     .button1:hover{
         @apply hover:font-[600] 
+        
     }
 }

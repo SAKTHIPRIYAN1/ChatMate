@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import img2 from '../assets/l.svg'
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
-import axios from 'axios';
+
+import Load from "./Loader";
 
 // redux....
 import {useDispatch,useSelector} from 'react-redux'
 import { alter } from "../Store/RegisterUser";
 
+// Annonymous chat redux....
+import { setAnnonymousPair } from "../Store/AnonymousUser";
+
 
 // socket..
-import {io, Socket} from'socket.io-client'
+import { useSocket } from "../SocketContext";
 
 
 const apiUrl = import.meta.env.VITE_BACKURL
@@ -40,9 +45,10 @@ const RegisterContainer=()=>{
 
 
 const RegisterPart=()=>{
-
+    const navigate=useNavigate();
     const [name,setName]=useState("");
     const [err,setErr]=useState("");
+    const dispatch=useDispatch();
 
     const [loading,setloading]=useState(false);
 
@@ -50,37 +56,49 @@ const RegisterPart=()=>{
     let activePreferences=new Set(useSelector((store)=>store.UserReg.interest))
 
     // scoket connection...
-    const [socket, setSocket] = useState(null);
- 
-    useEffect(() => {
-        if (!socket) {
-            const newSocket = io(apiUrl, { transports: ['websocket'] });
 
-            newSocket.on("connect", () => {
-                setIsConnected(true);
+    const {socket}=useSocket();
+
+    useEffect(() => {
+        if (socket!==null) {
+            socket.on("connect", () => {
                 console.log("Socket connected");
             });
 
-            newSocket.on("disconnect", () => {
-                setIsConnected(false);
+            socket.on("disconnect", () => {
                 console.log("Socket disconnected");
             });
 
-            newSocket.on("connect_error", (error) => {
+            socket.on("connect_error", (error) => {
                 console.log("Socket connection error:");
             });
-
-            setSocket(newSocket);
         }
-
-        return () => {
-            if (socket) {
-                socket.disconnect();
-            }
-        };
     }, [socket]);
 
-    const dispatch=useDispatch();
+    useEffect(()=>{
+    if(socket!=null){
+        socket.on("ack",({code,UserInfo})=>{
+                    
+            if(CheckResponse(code)){
+            const msg=UserInfo.name;
+            console.log(code+"kkkk")
+            console.log("stop load..",UserInfo);
+                dispatch(setAnnonymousPair(UserInfo))
+                setloading(false);
+                navigate("/message");
+            }
+            else{
+                setloading(false)
+                setErr("No pair Found...")
+            }
+    });
+    }
+    },[socket,dispatch,navigate])
+
+
+    
+
+    
 
     // store alter....
     const handleClick = (preference) => {
@@ -93,28 +111,34 @@ const RegisterPart=()=>{
             dispatch(alter([...newSet]))
     };
 
+    const CheckResponse=(code)=>{
+        console.log(code);
+        return code==200;
+    }
    
 // connect to the socket....
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setloading(true)
         try {
             let tmp=[...activePreferences];
             tmp=tmp.sort()
-           await socket.emit('newRegister', {name,interest:tmp});
-            console.log("sent...")
+            socket.emit('newRegister', {name,interest:tmp});
+            console.log("sent...");
         } catch (error) {
-            console.error("Error fetching data:", error);
+            setloading(false)
+            console.log("Error fetching data:", error);
             setErr(error);
         }
-        console.log(name);
         setName("");
-        dispatch(alter([]));
-        
+        dispatch(alter([])); 
     }
 
-    return(
+    if(loading)
+        return(<Load/>)
 
+    return(
+        
         <div className="h-[600px]  max-w-[450px] w-[100%] flex flex-col  items-center  justify-center  ">
         <div className="transparent_blue pb-7 max-w-[450px] w-[100%] flex flex-col  items-center pt-8">
             <h1 className="text-[35px] text-slate-200 font-bold ">CHITTI<span className='text-teal-300'>CHAT</span></h1>
@@ -147,6 +171,8 @@ const RegisterPart=()=>{
         </div>
 
         </div>
+
+    
     )
 }
 
