@@ -6,7 +6,7 @@ return(
 <HashLoader
         color="#2dd4bf"
         loading
-        size={100}
+        size={95}
 />
     </div>
 

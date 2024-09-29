@@ -22,7 +22,7 @@ const apiUrl = import.meta.env.VITE_BACKURL
 
 const RegisterPage=()=>{
     return(
-        <div className=" fullas  flex justify-center">
+        <div className=" fullas transition-all  flex justify-center">
             <RegisterContainer />  
         </div>
         
@@ -141,7 +141,7 @@ const RegisterPart=()=>{
         
         <div className="h-[600px]  max-w-[450px] w-[100%] flex flex-col  items-center  justify-center  ">
         <div className="transparent_blue pb-7 max-w-[450px] w-[100%] flex flex-col  items-center pt-8">
-            <h1 className="text-[35px] text-slate-200 font-bold ">CHITTI<span className='text-teal-300'>CHAT</span></h1>
+            <h1 className="text-[35px] text-slate-200 font-bold ">CHAT<span className='text-teal-300'>MATE</span></h1>
             <div className="w-[100%] pl-8">
                 <form className="" onSubmit={(e)=>handleSubmit(e)}>
                      <div className="my-6 w-full ">

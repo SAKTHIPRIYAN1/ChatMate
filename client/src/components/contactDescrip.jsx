@@ -1,9 +1,9 @@
 
 import AnnonChatDet from "./AnnonymsConcatDet"
-import {GlobeIc,UserIc,EditIC,MenuIc} from "./svg"
+import {GlobeIc,UserIc,EditIC,MenuIc,ReqIcon} from "./svg"
 const ConcatDescrip=()=>{
     return (
-       <div className="contactContain flex h-[100%] w-[35%] min-w-[400px] sm:hidden md:min-w-[300px]  s ">
+       <div className="contactContain flex h-[100%] w-[35%] min-w-[400px] sm:hidden md:min-w-[300px]   ">
         <MenuBar />
         <AnnonChatDet />
        </div>
@@ -28,9 +28,15 @@ const MenuBar=()=>{
             ic:EditIC,
             des:"Edit"
         },
+        {
+            ic:ReqIcon,
+            des:"Request"
+        },
+
+
         ]
     return(
-        <div className="h-[100%] w-[90px] transparent flex flex-col gap-0"> 
+        <div className="h-[100%] w-[90px] transition-all transparent flex flex-col gap-0"> 
                 {
                     MenuArr.map((el,ind)=>{
                         return (

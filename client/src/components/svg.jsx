@@ -16,7 +16,7 @@ export const Similey=()=>{
 }
 // #63E6BE
 export const SendIc=()=>{
-  return( <svg  className='  fill-white opacity-60 mb-1 hover:opacity-100 hover:cursor-pointer hover:fill-teal-300 active:scale-95 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="22" height="35">
+  return( <svg  className='  fill-teal-400 mb-1 hover:opacity-100 hover:cursor-pointer hover:fill-teal-300 active:scale-95 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="22" height="35">
     <path  d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480l0-83.6c0-4 1.5-7.8 4.2-10.8L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/>
   </svg>)
 }
@@ -57,5 +57,22 @@ export const InfoIc=()=>{
   </svg>
   )
 }
+
+
+export const ReqIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20">
+      <path className="fill-white" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" />
+    </svg>
+  );
+};
+
+export const ArrowLeftIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+      <path className='fill-white' d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+    </svg>
+  );
+};
 
 export default ClipIc;

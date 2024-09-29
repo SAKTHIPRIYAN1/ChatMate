@@ -4,7 +4,7 @@ import img2 from '../assets/nn.svg'
 import { Link } from "react-router-dom";
 const LoginPage=()=>{
     return(
-        <div className=" fullas  flex justify-center">
+        <div className=" fullas transition-all  flex justify-center">
             <LoginContainer />
         </div>
         
@@ -42,7 +42,7 @@ const LoginPart=()=>{
     return(
         <div className="h-[600px]   max-w-[450px] w-[100%] flex flex-col  items-center sm:pt-0 md:pt-0 pt-5">
         <div className="transparent_blue pb-7 max-w-[450px] w-[100%] flex flex-col  items-center pt-4">
-            <h1 className="text-[35px] text-emberlad-300 font-bold ">CHITTI<span className='text-teal-300'>CHAT</span></h1>
+            <h1 className="text-[35px] text-emberlad-300 font-bold ">CHAT<span className='text-teal-300'>MATE</span></h1>
             <div className="w-[100%] pl-8">
                 <form className="" onSubmit={(e)=>hangleSubmit(e)}>
                      <div className="my-6 w-full ">

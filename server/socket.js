@@ -19,12 +19,12 @@ class AnonymousChatting{
     }
 
     insert(name,interest,socketid){
-        this.UserMap[name]=socketid;
-        this.generalQueue.push({name,interest,time:Date.now() })
+        this.UserMap[socketid]=name;
+        this.generalQueue.push({socketid,name,interest,time:Date.now() })
         
         interest.forEach(inter => {
             if (this.interestQueues[inter]) {
-                this.interestQueues[inter].push({ name, inter,time:Date.now() });
+                this.interestQueues[inter].push({socketid,name, inter,time:Date.now() });
             } else {
                 console.warn(`Interest ${interest} not recognized.`);
             }
@@ -40,7 +40,7 @@ class AnonymousChatting{
             if(this.interestQueues[interest] && this.interestQueues[interest].length > 0 ){
                 const currentUser=this.interestQueues[interest].shift()
                this.generalQueue= this.generalQueue.filter(el=>{
-                    el.name!=currentUser.name;
+                    el.socketid!=currentUser.socketid;
                 })
                 return currentUser;
             }
@@ -104,7 +104,7 @@ class AnonymousChatting{
         if(userInterests){
             userInterests.forEach((interest) => {
                 if (this.interestQueues[interest]) {
-                    this.interestQueues[interest] = this.interestQueues[interest].filter(u => u.name !== user.name);
+                    this.interestQueues[interest] = this.interestQueues[interest].filter(u => u.socketid !== user.socketid);
                 }
             });
         }
@@ -112,10 +112,9 @@ class AnonymousChatting{
     
     sendMess(recip,UserInfo,code){
         console.log("sent...")
-        const RecipScoketId=this.UserMap[recip.name];
+        const RecipScoketId=recip.socketid;
         this.io.to(RecipScoketId).emit("ack", {code,UserInfo});
         this.removeFromInterestQueues(recip)
-
     }
     
 }
@@ -144,7 +143,6 @@ const socketSetup=(AppServer)=>{
             console.log("from ",name,":",interest);
             cls.insert(name,interest,socket.id)
             // console.log(cls)
-
             console.log("try_to_connect with a person with similiar taste.....")
             cls.try_to_connect(socket,io);
             
@@ -153,7 +151,13 @@ const socketSetup=(AppServer)=>{
         
 
         socket.on("AnnonymousMess",({reciv,mgs})=>Anonymousmessage());
-        socket.on('disconnect', disconnect);
+        socket.on('disconnect', ()=>{
+            const socketid = socket.id;  
+            if (cls.UserMap[socketid]) { 
+                delete cls.UserMap[socketid];  
+                console.log(`User  ${socketid}  removed`);
+            }
+        });
     })
 
 }
