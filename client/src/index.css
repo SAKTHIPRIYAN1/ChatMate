@@ -3,10 +3,15 @@
 @tailwind utilities;
 
 @layer base{
+    html{
+        /* background-image:radial-gradient(145.05% 100% at 50% 0,#1d2b41 0,#020509 57.38%,#0f1a29 88.16%); */
+        background-color: #02021fee;
+    }
     body{
         /* @apply h-[100vh] w-[100vw]  overflow-hidden */
-        background-image:radial-gradient(145.05% 100% at 50% 0,#0f1724 0,#020509 57.38%,#080e18 88.16%);
-        /* background-color: #04032cee; */
+        
+        background-image:radial-gradient(145.05% 100% at 50% 0,#1d2b41 0,#020509 57.38%,#0f1a29 88.16%);
+        
         height:100vh;
         width: 100vw;
         color: whitesmoke;
@@ -19,7 +24,7 @@
 
 @layer utilities{
     .bg{
-        /* background-image:radial-gradient(145.05% 100% at 50% 0,#1d2b41 0,#020509 57.38%,#0f1a29 88.16%); */
+       background-image:radial-gradient(145.05% 100% at 50% 0,#0f1724 0,#020509 57.38%,#080e18 88.16%);
         /* background-color: #07101d; */
     }
     .fullas{
@@ -37,6 +42,9 @@
         background-color:rgb(189, 157, 15);    
 
     }
+    .typ{
+        background-color: rgb(19, 21, 36);
+    }
 
     .button1{
         @apply flex   items-center justify-center active:scale-[0.96]  border-[1.5px]  px-12  py-1 text-[15px]  font-medium  rounded-md  leading-5 
@@ -47,6 +55,7 @@
         
     }
 
+    /* #238636 */
     .button{
         @apply flex   items-center justify-center active:scale-[0.96]  border-[1.5px]   py-1 text-[15px]  font-medium    leading-5 
     }

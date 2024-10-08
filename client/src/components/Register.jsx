@@ -8,7 +8,7 @@ import Load from "./Loader";
 
 // redux....
 import {useDispatch,useSelector} from 'react-redux'
-import { alter } from "../Store/RegisterUser";
+import { alter,setUserSock,setUserName} from "../Store/RegisterUser";
 
 // Annonymous chat redux....
 import { setAnnonymousPair } from "../Store/AnonymousUser";
@@ -46,17 +46,19 @@ const RegisterContainer=()=>{
 
 const RegisterPart=()=>{
     const navigate=useNavigate();
-    const [name,setName]=useState("");
+    
     const [err,setErr]=useState("");
     const dispatch=useDispatch();
 
     const [loading,setloading]=useState(false);
 
     // interest from the store....
-    let activePreferences=new Set(useSelector((store)=>store.UserReg.interest))
+    const [activePreferences,setactive]=useState(new Set(useSelector((store)=>store.UserReg.interest)));
+    const [name,setName]=useState(useSelector((store)=>store.UserReg.name));
+    console.log(name);
+    // let activePreferences=new Set(useSelector((store)=>store.UserReg.interest))
 
     // scoket connection...
-
     const {socket}=useSocket();
 
     useEffect(() => {
@@ -76,29 +78,32 @@ const RegisterPart=()=>{
     }, [socket]);
 
     useEffect(()=>{
-    if(socket!=null){
-        socket.on("ack",({code,UserInfo})=>{
-                    
-            if(CheckResponse(code)){
-            const msg=UserInfo.name;
-            console.log(code+"kkkk")
-            console.log("stop load..",UserInfo);
-                dispatch(setAnnonymousPair(UserInfo))
+    const handleAck = ({ code, UserInfo,socketid }) => {
+            if (CheckResponse(code)) {
+                const msg = UserInfo.name;
+                console.log(code + "kkkk");
+                console.log("stop load..", UserInfo);
+                dispatch(setAnnonymousPair(UserInfo));
+                console.log(socketid);
+                dispatch(setUserSock(socketid));
                 setloading(false);
                 navigate("/message");
+            } else {
+                setloading(false);
+                setErr("No pair Found...");
             }
-            else{
-                setloading(false)
-                setErr("No pair Found...")
-            }
-    });
+    };
+
+
+    if(socket!=null){
+        socket.on("ack",handleAck);
     }
-    },[socket,dispatch,navigate])
-
-
-    
-
-    
+    return ()=>{
+        if(socket){
+            socket.off("ack",handleAck);
+        }
+    }
+    },[socket])
 
     // store alter....
     const handleClick = (preference) => {
@@ -130,8 +135,8 @@ const RegisterPart=()=>{
             console.log("Error fetching data:", error);
             setErr(error);
         }
-        setName("");
-        dispatch(alter([])); 
+        
+        dispatch(setUserName(name));
     }
 
     if(loading)
@@ -175,7 +180,6 @@ const RegisterPart=()=>{
     
     )
 }
-
 
 const PreferenceButtons = ({handleClick,activePreferences}) => {
   

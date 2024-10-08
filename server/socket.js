@@ -11,7 +11,8 @@ class AnonymousChatting{
             Technical: [],
             Sarcasm: []
         },
-        this.UserMap={}
+        this.UserMap={};
+        this.SenderReciverMap={};
         this.readyUser=null;
         this.connected=false;
         this.maxTime=20000;
@@ -24,7 +25,7 @@ class AnonymousChatting{
         
         interest.forEach(inter => {
             if (this.interestQueues[inter]) {
-                this.interestQueues[inter].push({socketid,name, inter,time:Date.now() });
+                this.interestQueues[inter].push({socketid,name, interest,time:Date.now() });
             } else {
                 console.warn(`Interest ${interest} not recognized.`);
             }
@@ -110,21 +111,44 @@ class AnonymousChatting{
         }
     }
     
-    sendMess(recip,UserInfo,code){
+    sendMess(sender,UserInfo,code){
         console.log("sent...")
-        const RecipScoketId=recip.socketid;
-        this.io.to(RecipScoketId).emit("ack", {code,UserInfo});
-        this.removeFromInterestQueues(recip)
+        if(UserInfo){
+            this.SenderReciverMap[sender.socketid]=UserInfo.socketid;
+            console.log(this.SenderReciverMap);
+        }
+        const RecipScoketId=sender.socketid;
+        this.io.to(RecipScoketId).emit("ack", {code,UserInfo,socketid:sender.socketid});
+        this.removeFromInterestQueues(sender)
     }
-    
-}
-const disconnect=()=>{
-    console.log("The user is disconnected....")
+
+    NotifyReceiver(socketid){
+        if(this.SenderReciverMap[socketid]){
+            const RecivId=this.SenderReciverMap[socketid];
+
+
+            delete this.UserMap[socketid];
+            delete this.SenderReciverMap[socketid];
+            delete this.SenderReciverMap[RecivId];
+            delete this.UserMap[RecivId]; 
+
+            // emit message to receiver..
+            console.log("emiiting disconnected Message...");
+            const Code=500;
+            this.io.to(RecivId).emit("senderDisconnected",Code);
+
+        }
+    }
+
+    transmitMessage(ReceiverSock,message){
+        console.log("transmitting Message....");
+        this.io.to(ReceiverSock).emit("ReceiveMessage",message);
+        console.log("transmitted...")
+    }
+
 }
 
-const Anonymousmessage=({reciv,mgs})=>{
-    console.log("to"+reciv+":"+mgs);
-}
+
 
 
 
@@ -134,31 +158,75 @@ const socketSetup=(AppServer)=>{
         methods:["GET","POST"],
     })
 
-    let cls=new AnonymousChatting()
+    let cls=new AnonymousChatting();
 
     io.on("connection",(socket)=>{
         cls.io=io;
         console.log("a user connected");
         socket.on("newRegister",({name,interest})=>{
             console.log("from ",name,":",interest);
-            cls.insert(name,interest,socket.id)
-            // console.log(cls)
+
+            try {
+                cls.insert(name, interest, socket.id);
+            } catch (error) {
+                console.log("Failed to insert user:", error);
+            }
+
             console.log("try_to_connect with a person with similiar taste.....")
             cls.try_to_connect(socket,io);
             
         });
 
-        
+        socket.on("changeperson",({sockid,name,interest})=>{
 
-        socket.on("AnnonymousMess",({reciv,mgs})=>Anonymousmessage());
+            console.log("try to change person....")
+            if (cls.UserMap[sockid]) { 
+                delete cls.UserMap[sockid];  
+                console.log(`User  ${sockid}  removed`);
+            }
+
+            cls.NotifyReceiver(sockid);
+
+            // crearting new instances.......
+            try {
+                console.log(name, interest, socket.id);
+                cls.insert(name, interest, socket.id);
+            } catch (error) {
+                console.log("Failed to insert user:", error);
+            }
+
+            console.log("try_to_connect with a person with similiar taste.....")
+            cls.try_to_connect(socket,io);
+        });
+
+        socket.on("sendMess",({message,ReceiverSock})=>{
+            console.log(message," has sent to ",ReceiverSock,"form",socket.id);
+            try{
+              cls.transmitMessage(ReceiverSock,message);
+            }
+            catch(err){
+                console.log("transmitting ERror",err);
+            }
+            
+            
+        });
+
         socket.on('disconnect', ()=>{
             const socketid = socket.id;  
             if (cls.UserMap[socketid]) { 
                 delete cls.UserMap[socketid];  
                 console.log(`User  ${socketid}  removed`);
             }
+
+            try{
+                cls.NotifyReceiver(socketid);
+                console.log("successfully notified....")
+            }
+            catch(err){
+                console.log("notification error",err)
+            }
         });
-    })
+    });
 
 }
 

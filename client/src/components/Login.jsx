@@ -17,7 +17,7 @@ const LoginContainer=()=>{
     return (
         <div className=" flex justify-between   w-[80%] sm:justify-center md:justify-center  z-0  my-auto  px-0 p-5 mx-[15%]  sm:mx-[5%]">
             <div className="flex imgDiv h-[100%]  sm:hidden md:hidden relative min-w-[300px] ">
-                <img src={img2} alt="Loading..." className="   select-none h-[700px] w-[100%] object-cover flex sm:hidden md:hidden " draggable="false" />
+                <img src={img2} alt="Load..." className="   select-none h-[700px] w-[100%] object-cover flex sm:hidden md:hidden " draggable="false" />
             </div>
             <div className="items-center flex mr-12 sm:mr-0 md:mr-0 sm:w-[90%] md:w-[70%] imgDiv   w-[50%] mx-2 min-w-[300px] "> 
                 <LoginPart />
