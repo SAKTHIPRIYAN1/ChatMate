@@ -37,6 +37,9 @@ import { LoadingProvider, useLoading } from "./Loadingcontext";
 // maincaht..
 import MainChat from "./MainChat";
 
+// redierct..
+import useRegRedirect from "../CustomHooks/RegRedirectMethod";
+
 
 const MessagePart=()=>{
     const val=useSelector((store)=>store.AnnRecip.hasRecip);
@@ -53,13 +56,13 @@ const MessagePart=()=>{
     },[])
 
     useEffect(()=>{
-    if(socket!=null){
-        socket.on("senderDisconnected", () => {
-            console.log("Receiver Disconnected....");
-            dispatch(clearAnnonMess());
-            navigate("/register");
-        });
-    }
+        if(socket!=null){
+            socket.on("senderDisconnected", () => {
+                console.log("Receiver Disconnected....");
+                dispatch(clearAnnonMess());
+                navigate("/register");
+            });
+        }
     },[socket]);
 
     
@@ -90,11 +93,24 @@ const MessComp=()=>{
 
 const MessContain=()=>{
     const ChatPerson=useSelector((store)=>store.AnnRecip.recipName);
+    const mainRef=useRef(null);
+    const [ScrollToBottom,setScrollBotttom]=useState(false);
+
+    useEffect(()=>{
+        if(mainRef.current){
+            mainRef.current.scrollTo({
+                top: mainRef.current.scrollHeight, 
+                behavior: 'smooth',
+              });
+        }
+    },[ScrollToBottom]);
+
+    
     return(
         <div className="h-full w-[70%] sm:w-[100%] relative ">
         <MessHead ChatPerson={ChatPerson}/>
-        <MainChat  ChatPerson={ChatPerson}/>
-        <TyperDiv />
+        <MainChat reff={mainRef} ChatPerson={ChatPerson}/>
+        <TyperDiv  scrollfunc={setScrollBotttom} />
         </div>
     )
 }
@@ -106,19 +122,26 @@ const MessHead=({ChatPerson})=>{
     const navigate=useNavigate();
     const {setLoading}=useLoading();
     const { ChangePerson } = ChangePersonHook({setLoading});
-
+    const {socket}=useSocket();
+    const dispatch=useDispatch();
+    const sockid=useSelector((store)=>store.UserReg.socketId)
 
     const handleNext=()=>{
         setLoading(true);
         ChangePerson(setLoading);
     }
-    
 
+    const handleRedirect=()=>{
+        console.log('j1');
+        useRegRedirect({dispatch,socket,sockid});
+    }
 
     return(
         <div className=" flex transparent_tone justify-between flex-row w-full px-3 h-[45px] ">
-            <div className="h-full hidden sm:flex sm:mr-3 hover:cursor-pointer active:scale-90 transition-all items-center" onClick={()=>{navigate("/register");}}>
+            <div className="h-full fill-white hidden sm:flex sm:mr-3 hover:cursor-pointer   active:scale-90 transition-all items-center" onClick={()=>{navigate("/register");handleRedirect();}}>
+                <div className="hover:bg-teal-900/40 rounded-full p-[7px]  ">
                 <ArrowLeftIcon />
+                </div>
             </div>
            <div className="h-[100%] w-[122px] flex-1 justify-start flex items-center  "> 
                 <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate">
@@ -126,11 +149,11 @@ const MessHead=({ChatPerson})=>{
                 </h1>
            </div>
            <div className="h-full hidden sm:flex items-center min-w-[100px] gap-3 justify-between">
-                <button className="button px-5 w-auto bg-teal-700 rounded-full">
+                <button className="button px-5 w-auto bg-sender rounded-full">
                     save
                 </button>
 
-                <button className="button px-5 w-auto rounded-full bg-slate-500/20" onClick={handleNext}>
+                <button className="button px-5 w-auto rounded-full bg-teal-950/90" onClick={handleNext}>
                     next
                 </button>
            </div>
@@ -142,7 +165,7 @@ const MessHead=({ChatPerson})=>{
     )
 }
 
-const TyperDiv = () => {
+const TyperDiv = ({scrollfunc}) => {
 
     // forsocket....
     const {socket}=useSocket();
@@ -174,7 +197,13 @@ const TyperDiv = () => {
         socket.emit("sendMess",{message,ReceiverSock});
         console.log("message sent");
         dispatch(addNewAnnonMess({isYou:true,mess:message}));
-        setMessage("")
+        textareaRef.current.style.height = 'auto';
+        textareaRef.current.focus();
+        scrollfunc((cur)=>{
+            console.log(cur);
+            return !cur;
+        });
+        setMessage('');
     }
     let pt = textareaRef.current && textareaRef.current.scrollHeight > 45 ? 'mt-3' : '';
 
@@ -193,7 +222,7 @@ const TyperDiv = () => {
                 placeholder="Enter your message..."
                 name="message"
                 id="mess"
-                className={`resize-none  my-auto bg-transparent w-[100%] flex-1 outline-none   overflow-hidden ${pt}` }
+                className={`resize-none  my-auto bg-transparent w-[100%] flex-1  flex outline-none  overflow-hidden ${pt}` }
                 rows={1}
                 style={{ maxHeight: '150px' }}
             />

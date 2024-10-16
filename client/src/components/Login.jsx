@@ -47,7 +47,7 @@ const LoginPart=()=>{
                 <form className="" onSubmit={(e)=>hangleSubmit(e)}>
                      <div className="my-6 w-full ">
                             <label className="block  text-teal-300 text-md  font-bold mb-2" htmlFor="name">UserId</label>
-                            <input type="text" id="name" ame="name" onChange={(e)=>{setName(e.target.value)}} placeholder="Enter your userid" className=" w-[90%] px-3 py-2 bg-transparent border-[1.5px] text-white  border-slate-500 rounded-md focus:outline-none  focus:border-white/80" required />
+                            <input type="text" id="name" ame="name" autoFocus={true} onChange={(e)=>{setName(e.target.value)}} placeholder="Enter your userid" className=" w-[90%] px-3 py-2 bg-transparent border-[1.5px] text-white  border-slate-500 rounded-md focus:outline-none  focus:border-white/80" required />
                      </div>
 
                      <div className="my-6 w-full ">

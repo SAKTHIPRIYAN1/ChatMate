@@ -34,8 +34,10 @@
         background-color: rgba(72, 84, 114, 0.315);
     }
     .transparent_tone{
-        background-color: rgba(54, 58, 78, 0.521);
-        opacity: 0.8;
+             background-color: rgba(36, 39, 53, 0.521);
+    }
+    .bg-sender{
+        background-color: #161b33;
     }
 
     .contactCon{

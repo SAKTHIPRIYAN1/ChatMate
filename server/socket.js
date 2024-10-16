@@ -149,6 +149,20 @@ class AnonymousChatting{
 }
 
 
+const DisconnectAction=(cls,socketid)=>{
+    if (cls.UserMap[socketid]) { 
+        delete cls.UserMap[socketid];  
+        console.log(`User  ${socketid}  removed`);
+    }
+
+    try{
+        cls.NotifyReceiver(socketid);
+        console.log("successfully notified....")
+    }
+    catch(err){
+        console.log("notification error",err)
+    }
+}
 
 
 
@@ -178,15 +192,7 @@ const socketSetup=(AppServer)=>{
         });
 
         socket.on("changeperson",({sockid,name,interest})=>{
-
-            console.log("try to change person....")
-            if (cls.UserMap[sockid]) { 
-                delete cls.UserMap[sockid];  
-                console.log(`User  ${sockid}  removed`);
-            }
-
-            cls.NotifyReceiver(sockid);
-
+            DisconnectAction(cls,sockid);
             // crearting new instances.......
             try {
                 console.log(name, interest, socket.id);
@@ -211,20 +217,13 @@ const socketSetup=(AppServer)=>{
             
         });
 
-        socket.on('disconnect', ()=>{
-            const socketid = socket.id;  
-            if (cls.UserMap[socketid]) { 
-                delete cls.UserMap[socketid];  
-                console.log(`User  ${socketid}  removed`);
-            }
+        socket.on('ReUser',({sockid})=>{
+            console.log('redirection req...')
+            DisconnectAction(cls,sockid);
+        })
 
-            try{
-                cls.NotifyReceiver(socketid);
-                console.log("successfully notified....")
-            }
-            catch(err){
-                console.log("notification error",err)
-            }
+        socket.on('disconnect',()=>{
+            DisconnectAction(cls,socket.id);
         });
     });
 

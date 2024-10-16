@@ -41,7 +41,7 @@ const MenuBar=()=>{
                 {
                     MenuArr.map((el,ind)=>{
                         return (
-                            <MenuContent cont={el.ic} key={ind} des={el.des} />
+                                <MenuContent cont={el.ic} key={ind} des={el.des} />
                         )
                     })
                 }

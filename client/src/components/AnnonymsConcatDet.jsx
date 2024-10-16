@@ -3,11 +3,15 @@ import { useSelector,useDispatch } from "react-redux";
 import ChangePersonHook from "../CustomHooks/ChangePersonHook";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// loader...
-import {Load2} from "./Loader";
 
+
+import { ArrowLeftIcon } from "./svg";
 // useloadinggg...
 import { useLoading } from "./Loadingcontext"; 
+
+import { useSocket } from "../SocketContext";
+// for redirect to reg page..
+import useRegRedirect from "../CustomHooks/RegRedirectMethod";
 
 const AnnonChatDet=()=>{
     const val=useSelector((store)=>store.AnnRecip.hasRecip);
@@ -38,6 +42,11 @@ const SearchBar=()=>{
 };
 
 const AnnonDes=()=>{
+    const dispatch=useDispatch();
+    const {socket}=useSocket();
+    
+    const sockid=useSelector((store)=>store.UserReg.socketId);
+
     const {setLoading}=useLoading();
     const { ChangePerson } = ChangePersonHook({setLoading});
     const RecipName=useSelector((store)=>store.AnnRecip.recipName);
@@ -48,12 +57,23 @@ const AnnonDes=()=>{
         setLoading(true);
         ChangePerson(setLoading);
     }
+    const navigate=useNavigate();
+
+    const handleRedirect=()=>{
+        console.log('j1');
+        useRegRedirect({dispatch,socket,sockid});
+    }
 
 
     return(
-        <div className="h-full w-full flex  items-center flex-col mt-3">
-            <h1 className="font-bold  text-2xl" > USER <span className="text-teal-300" >DESCRIPTION</span></h1>
-            <div className="flex   flex-col w-full items-center mt-5 md:px-2 px-4">
+        <div className="h-full w-full flex  overflow-scroll pb-8 items-center flex-col mt-3">
+            <div className="flex flex-row items-center  w-full justify-center relative">
+                <div className="absolute left-2 fill-white hover:cursor-pointer  p-[6px] rounded-full hover:bg-teal-900/90  active:scale-90" onClick={()=>{handleRedirect();navigate("/register");}} >
+                    <ArrowLeftIcon />
+                </div>
+                <h1 className="font-bold  text-2xl" > USER <span className="text-teal-300" >DESCRIPTION</span></h1>
+            </div>
+            <div className="flex   flex-col w-full items-center mt-5 md:px-2 px-4" >
                 <div className="relative bg-gray-700   flex justify-center items-center h-auto p-2 rounded-full w-auto">
                     <img className="h-[140px] " src={svg} alt="loading....." draggable="false" />
                 </div>
@@ -72,13 +92,15 @@ const AnnonDes=()=>{
         <div className="w-full  px-7 md:px-2 flex-col" >
         <h1 className="block  text-teal-300 text-md  font-bold ">Choices</h1>
         <div className="h-full items-center flex  gap-3 justify-between">
-                <button className="button w-[50%] px-5  h-10 text-lg max-w-[200px] bg-teal-700 rounded-full">
+        <button className="button px-5 w-[50%] h-10 text-lg max-w-[200px]  rounded-full bg-teal-900/90" onClick={handleNext}>
+                    Next
+                </button>
+                
+                <button className="button w-[50%] px-5  h-10 text-lg max-w-[200px] bg-sender rounded-full">
                     Save
                 </button>
 
-                <button className="button px-5 w-[50%] h-10 text-lg max-w-[200px]  rounded-full bg-slate-500/20" onClick={handleNext}>
-                    Next
-                </button>
+                
            </div>
 
         </div>

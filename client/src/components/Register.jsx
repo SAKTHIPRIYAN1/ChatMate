@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import img2 from '../assets/l.svg'
 import { Link} from "react-router-dom";
 import { useNavigate} from "react-router-dom";
@@ -45,6 +45,10 @@ const RegisterContainer=()=>{
 
 
 const RegisterPart=()=>{
+
+    // ref.....
+    const typerRef=useRef(null);
+
     const navigate=useNavigate();
     
     const [err,setErr]=useState("");
@@ -151,7 +155,7 @@ const RegisterPart=()=>{
                 <form className="" onSubmit={(e)=>handleSubmit(e)}>
                      <div className="my-6 w-full ">
                             <label className="block  text-teal-300 text-md  font-bold mb-2" htmlFor="name">How Can we Call U?</label>
-                            <input type="text" id="name" ame="name" onChange={(e)=>{setName(e.target.value)}} value={name} placeholder="Enter your userid" className=" w-[90%] px-3 py-2 bg-transparent border-[1.5px] text-white  border-slate-500 rounded-md focus:outline-none  focus:border-white/80" required />
+                            <input type="text" id="name" ame="name" ref={typerRef} autoFocus={true} onChange={(e)=>{setName(e.target.value)}} value={name} placeholder="Enter your userid" className=" w-[90%] px-3 py-2 bg-transparent border-[1.5px] text-white  border-slate-500 rounded-md focus:outline-none  focus:border-white/80" required />
                      </div>
 
                      <div className="flex mt-2 mb-4">
