@@ -9,9 +9,9 @@ const AnnonMess=createSlice({
     initialState:initialState,
     reducers:{
         addNewAnnonMess:(state,action)=>{
-           console.log(action.payload)
+        //    console.log(action.payload)
            state.messages.push(action.payload);
-           console.log(state.messages);
+        //    console.log(state.messages);
         },
         clearAnnonMess:(state,action)=>{
             state.messages=[];

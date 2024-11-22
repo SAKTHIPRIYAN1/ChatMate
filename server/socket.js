@@ -1,4 +1,10 @@
 import { Server } from "socket.io";
+import multer from "multer";
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
+});
 
 const SuccessCode=200;
 const FailureCode=500;
@@ -133,7 +139,7 @@ class AnonymousChatting{
             delete this.UserMap[RecivId]; 
 
             // emit message to receiver..
-            console.log("emiiting disconnected Message...");
+            console.log("emiiting disconnected2 Message...");
             const Code=500;
             this.io.to(RecivId).emit("senderDisconnected",Code);
 
@@ -145,6 +151,7 @@ class AnonymousChatting{
         this.io.to(ReceiverSock).emit("ReceiveMessage",message);
         console.log("transmitted...")
     }
+
 
 }
 
@@ -220,7 +227,14 @@ const socketSetup=(AppServer)=>{
         socket.on('ReUser',({sockid})=>{
             console.log('redirection req...')
             DisconnectAction(cls,sockid);
-        })
+        });
+
+
+        socket.on('sendFile', ({filePath,name,receiverId}) => {
+                console.log(name,' sent from sender to server:', filePath);
+                io.to(receiverId).emit('receiveFile',{filePath,name});
+        });
+
 
         socket.on('disconnect',()=>{
             DisconnectAction(cls,socket.id);

@@ -1,3 +1,4 @@
+import axios from 'axios';
 
 import ClipIc from "./svg";
 import { Similey } from "./svg";
@@ -15,7 +16,7 @@ import { alter } from "../Store/RegisterUser";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { addNewAnnonMess,clearAnnonMess } from "../Store/AnnonymousMessages";
-
+import { ClearAnnonRecip } from "../Store/AnonymousUser";
 // Arrow....
 import { ArrowLeftIcon } from "./svg";
 
@@ -41,6 +42,11 @@ import MainChat from "./MainChat";
 import useRegRedirect from "../CustomHooks/RegRedirectMethod";
 
 
+// my emojipicker...
+import MyEmojiPicker from "./EmojiPicker";
+
+const VITE_BACKURL = import.meta.env.VITE_BACKURL;
+
 const MessagePart=()=>{
     const val=useSelector((store)=>store.AnnRecip.hasRecip);
     const navigate=useNavigate();
@@ -60,6 +66,7 @@ const MessagePart=()=>{
             socket.on("senderDisconnected", () => {
                 console.log("Receiver Disconnected....");
                 dispatch(clearAnnonMess());
+                dispatch(ClearAnnonRecip())
                 navigate("/register");
             });
         }
@@ -192,11 +199,13 @@ const TyperDiv = ({scrollfunc}) => {
     };
 
     const handleSend=()=>{
+        if(message.length<=0)
+            return;
 
         console.log(message)
         socket.emit("sendMess",{message,ReceiverSock});
         console.log("message sent");
-        dispatch(addNewAnnonMess({isYou:true,mess:message}));
+        dispatch(addNewAnnonMess({isYou:true,mess:message,isFile:false}));
         textareaRef.current.style.height = 'auto';
         textareaRef.current.focus();
         scrollfunc((cur)=>{
@@ -204,14 +213,67 @@ const TyperDiv = ({scrollfunc}) => {
             return !cur;
         });
         setMessage('');
+
+        
     }
     let pt = textareaRef.current && textareaRef.current.scrollHeight > 45 ? 'mt-3' : '';
 
+    const emofunc=()=>{
+            setVisible(!isPickerVisible)
+    }
 
+    const FileRef=useRef(null);
+    
+    
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = async (e) => {
+        console.log("Trying to send file...\n");
+        const file = e.target.files[0];
+        if (!file) return;
+    
+        try {
+            console.log(file)
+            // Create form data
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('receiverSocket',ReceiverSock); 
+            formData.append('filename',file.name);
+    
+            // Send the file to the server using Axios
+            const resp = await axios.post(VITE_BACKURL+"/file/Annon", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            
+            console.log('File successfully uploaded:', resp.data);
+            const filePath=resp.data.filePath
+             socket.emit('sendFile',{filePath,name:file.name,receiverId:ReceiverSock})
+
+            //  adding file to the front end...
+            dispatch(addNewAnnonMess(
+                {
+                    isYou:true,
+                    mess:'file1',
+                    isFile:true,
+                    path:filePath,
+                    filename:file.name
+                }
+            ))
+            
+        } catch (err) {
+            console.error('Error uploading file:', err);
+        }
+    };
+
+
+  
     return (
         <div className="flex typ w-[100%] px-4 bottom-0 right-0 left-0 absolute  h-auto min-h-[45px] ">
-            <div className="min-h-[45px] h-auto flex items-end mr-4">
+            <div className="min-h-[45px] h-auto flex items-end mr-4" onClick={()=>{FileRef.current.click();}}>
                 <ClipIc />
+                <input type="file" name="file" id="" className="hidden" ref={FileRef} onChange={handleFileChange} />
             </div>
 
             <textarea
@@ -228,12 +290,13 @@ const TyperDiv = ({scrollfunc}) => {
             />
 
             <div className="min-h-[45px] h-auto flex items-end  mr-2 gap-4 ml-4">
-                <div onClick={()=>{setVisible(!isPickerVisible);}}>
+                <div onClick={emofunc}>
                     <Similey />
                 </div>
                 {
-                    isPickerVisible && <EmojiPicker pbt={setVisible} func={setMessage} cur={message} />
+                    isPickerVisible && <EmojiPicker pbt={setVisible}  func={setMessage} val={message}  />
                 }
+                
                 <div onClick={handleSend}>
                     <SendIc />
                 </div>
@@ -244,28 +307,14 @@ const TyperDiv = ({scrollfunc}) => {
 };
 
 
-const EmojiPicker=({func,cur,pbt})=>{
+const EmojiPicker=({pbt,func,val})=>{
     const pickerRef=useRef(null);
-    useEffect(()=>{
-        const handleOutside=(e)=>{
-            if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-                pbt(false);
-              }
-        }
-        document.addEventListener('mousedown',handleOutside);
-        document.addEventListener('touchstart',handleOutside);
 
-
-        return ()=>{
-            document.removeEventListener('mousedown',handleOutside);
-            document.removeEventListener('touchstart',handleOutside);
-        }
-    },[])
 
     return(
 
             <div ref={pickerRef} className={"absolute   right-0 bottom-[100%] mb-2"}>
-                <Picker theme='dark' onEmojiSelect={(emo)=>func(cur+emo.native)} autoFocus={true} />
+                <MyEmojiPicker func={func} val={val} />
             </div>
 
     )

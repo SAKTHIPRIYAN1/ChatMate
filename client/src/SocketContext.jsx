@@ -7,6 +7,8 @@ const SocketContext = createContext();
 // import form store,,,,
 import { useSelector,useDispatch } from 'react-redux';
 import { addNewAnnonMess } from './Store/AnnonymousMessages';
+import { clearAnnonMess } from './Store/AnnonymousMessages';
+import { ClearAnnonRecip } from './Store/AnonymousUser';
 import store from './Store/store';
 
 
@@ -38,16 +40,41 @@ export const SocketProvider = ({ children }) => {
 
             newSocket.on("ReceiveMessage",(message)=>{
                 console.log("received Message:",message);
-                dispatch(addNewAnnonMess({isYou:false,mess:message}));
+                dispatch(addNewAnnonMess({isYou:false,mess:message,isFile:false}));
             });
+
+            newSocket.on("senderDisconnected", () => {
+                console.log("Receiver Disconnected....");
+                dispatch(clearAnnonMess());
+                dispatch(ClearAnnonRecip())
+                // navigate("/register");
+            });
+
+
+            newSocket.on('receiveFile', ({ filePath, name }) => {
+                    console.log("file received...",filePath,name)
+                    dispatch(addNewAnnonMess(
+                        {
+                            isYou:false,
+                            mess:'file1',
+                            isFile:true,
+                            path:filePath,
+                            filename:name
+                        }
+                    ))
+            });
+
+              
     
 
+            
             // // Handle reconnection attempt failures
             // newSocket.on('reconnect_failed', () => {
             //     console.log("failed after maximum attempts");
             // });
 
 
+            
             // // Handle disconnecting 
             return () => {
                 newSocket.disconnect();

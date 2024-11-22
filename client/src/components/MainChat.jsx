@@ -22,7 +22,7 @@ const MainChat=({reff,ChatPerson})=>{
             {
                 Messages.map((el,key)=>{
                        return(
-                        <MessageContainer key={key} isYou={el.isYou} Mess={el.mess} />
+                        <MessageContainer key={key} isYou={el.isYou} Mess={el.mess} Main={el} />
                        );
                 })
             }

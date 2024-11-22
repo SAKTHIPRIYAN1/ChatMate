@@ -13,7 +13,7 @@ const RecipSlice=createSlice({
     reducers:{
         setAnnonymousPair:(state,action)=>{
             const {interest,name,socketid}=action.payload;
-            console.log(action.payload)
+            // console.log(action.payload)
             state.recipInter=interest;
             state.recipName=name;
             state.recipSock=socketid;
@@ -26,7 +26,7 @@ const RecipSlice=createSlice({
             state.recipInter=undefined;
             state.recipInter=[];
             
-            console.log("from store : Annonymous Recip Cleared");
+            // console.log("from store : Annonymous Recip Cleared");
         }
     }
 })
