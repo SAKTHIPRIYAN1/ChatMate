@@ -7,7 +7,7 @@ import { SendIc } from "./svg";
 import ChatTimer from "./ChatTimer";
 import { useNavigate } from "react-router-dom";
 
-import { useRef } from "react";
+import { useRef ,useLayoutEffect} from "react";
 import { useState,useEffect } from "react";
 
 //  chat Person slice from store...
@@ -17,6 +17,8 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { addNewAnnonMess,clearAnnonMess } from "../Store/AnnonymousMessages";
 import { ClearAnnonRecip } from "../Store/AnonymousUser";
+
+import { setDesVisible } from '../Store/AnnonDesslice';
 // Arrow....
 import { ArrowLeftIcon } from "./svg";
 
@@ -53,7 +55,9 @@ const MessagePart=()=>{
     const dispatch=useDispatch();
     const {socket}=useSocket();
 
-    useEffect(()=>{
+    
+
+    useLayoutEffect(()=>{
         if(!val){
             navigate("/register");
             dispatch(alter([]));
@@ -75,9 +79,9 @@ const MessagePart=()=>{
     
     
     return (
-        <LoadingProvider>
+        
             <MessComp />
-        </LoadingProvider>
+      
       );
 
    
@@ -114,7 +118,7 @@ const MessContain=()=>{
 
     
     return(
-        <div className="h-full w-[70%] sm:w-[100%] relative ">
+        <div className="h-full w-[70%]  sm:w-[100%] relative ">
         <MessHead ChatPerson={ChatPerson}/>
         <MainChat reff={mainRef} ChatPerson={ChatPerson}/>
         <TyperDiv  scrollfunc={setScrollBotttom} />
@@ -139,23 +143,28 @@ const MessHead=({ChatPerson})=>{
     }
 
     const handleRedirect=()=>{
-        console.log('j1');
+
         useRegRedirect({dispatch,socket,sockid});
     }
 
+    const SetDesVisi=()=>{
+        console.log("User Des Visible..");
+        dispatch(setDesVisible(true))
+    }
+
     return(
-        <div className=" flex transparent_tone justify-between flex-row w-full px-3 h-[45px] ">
+        <div className=" flex select-none transparent_tone justify-between flex-row w-full px-3 h-[45px] ">
             <div className="h-full fill-white hidden sm:flex sm:mr-3 hover:cursor-pointer   active:scale-90 transition-all items-center" onClick={()=>{navigate("/register");handleRedirect();}}>
                 <div className="hover:bg-teal-900/40 rounded-full p-[7px]  ">
                 <ArrowLeftIcon />
                 </div>
             </div>
-           <div className="h-[100%] w-[122px] flex-1 justify-start flex items-center  "> 
-                <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate">
+           <div className="h-[100%] w-[122px] flex-1 justify-start flex items-center "   > 
+                <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate"  onClick={()=>SetDesVisi()}  >
                     {ChatPerson}
                 </h1>
            </div>
-           <div className="h-full hidden sm:flex items-center min-w-[100px] gap-3 justify-between">
+           {/* <div className="h-full hidden sm:flex items-center min-w-[100px] gap-3 justify-between">
                 <button className="button px-5 w-auto bg-sender rounded-full">
                     save
                 </button>
@@ -163,9 +172,9 @@ const MessHead=({ChatPerson})=>{
                 <button className="button px-5 w-auto rounded-full bg-teal-950/90" onClick={handleNext}>
                     next
                 </button>
-           </div>
+           </div> */}
 
-           <div className="sm:hidden">
+           <div className="">
                 <ChatTimer /> 
            </div>
         </div>

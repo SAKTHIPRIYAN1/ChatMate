@@ -4,7 +4,7 @@ import ChangePersonHook from "../CustomHooks/ChangePersonHook";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
+import { setDesVisible } from "../Store/AnnonDesslice";
 import { ArrowLeftIcon } from "./svg";
 // useloadinggg...
 import { useLoading } from "./Loadingcontext"; 
@@ -24,13 +24,17 @@ const AnnonChatDet=()=>{
         }
     },[])
 
-  
+
 
     return(
-        <div className="h-full w-full border-x-[1px]    border-x-slate-950 shadow-slate-900 hadow-sm  transparent_tone">
-            {/* <SearchBar /> */}
-            <AnnonDes  />
-        </div>
+        <>
+        <div className="h-full w-full border-x-[1px]   border-x-slate-950  sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm  transparent_tone">
+                    {/* <SearchBar /> */}
+                    <AnnonDes  />
+        </div>  
+        </>
+                
+
     )
 }
 const SearchBar=()=>{
@@ -48,6 +52,7 @@ const AnnonDes=()=>{
     const sockid=useSelector((store)=>store.UserReg.socketId);
 
     const {setLoading}=useLoading();
+
     const { ChangePerson } = ChangePersonHook({setLoading});
     const RecipName=useSelector((store)=>store.AnnRecip.recipName);
     const InterestArr=useSelector((store)=>store.AnnRecip.recipInter);
@@ -60,15 +65,15 @@ const AnnonDes=()=>{
     const navigate=useNavigate();
 
     const handleRedirect=()=>{
-        console.log('j1');
         useRegRedirect({dispatch,socket,sockid});
     }
+
 
 
     return(
         <div className="h-full w-full flex  overflow-scroll pb-8 items-center flex-col mt-3">
             <div className="flex flex-row items-center  w-full justify-center relative">
-                <div className="absolute left-2 fill-white hover:cursor-pointer  p-[6px] rounded-full hover:bg-teal-900/90  active:scale-90" onClick={()=>{handleRedirect();navigate("/register");}} >
+                <div className="absolute left-2 fill-white hover:cursor-pointer  p-[6px] rounded-full hover:bg-teal-900/90  active:scale-90" onClick={()=>{dispatch(setDesVisible(false))}} >
                     <ArrowLeftIcon />
                 </div>
                 <h1 className="font-bold  text-2xl" > USER <span className="text-teal-300" >DESCRIPTION</span></h1>

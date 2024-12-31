@@ -38,7 +38,7 @@ import { FileIcon } from './svg';
     const handleFileDownload = async (filePath, customFilename) => {
       try {
         // Make a GET request to the server to fetch the file
-        const response = await axios.get(`${import.meta.env.VITE_BACKURL}${filePath}?filename=${encodeURIComponent(customFilename)}`, {
+          const response = await axios.get(`${import.meta.env.VITE_BACKURL}${filePath}?filename=${encodeURIComponent(customFilename)}`, {
           responseType: 'blob', // Important for handling the file as a binary large object (Blob)
         });
     
@@ -65,11 +65,11 @@ import { FileIcon } from './svg';
       {
       Main['isFile'] ?
 
-              <div className='h-13 min-w-[200px] gap-4 pr-2 items-center flex'>
+              <div className='h-13 min-w-[200px]  gap-4 pr-2 items-center flex'>
                   <div className='h-[45px] w-[45px] rounded-full bg-teal-900 flex items-center justify-center'>
                     <FileIcon />
                   </div>
-                  <div className='h-full'>
+                  <div className='h-full w-full'>
                     <h2>{Main.filename}</h2>
                     <a
                       onClick={(e) => {
@@ -148,16 +148,18 @@ const TheirMessContainer = ({ Mess,Main }) => {
     }, [isExpanded, Mess]);
   
     return (
-      <div className="flex items-center p-[3px] w-full h-auto " ref={messageRef} >
-        <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%]  sm:max-w-[75%]">
-        {
+      <div className="flex items-center justify-start p-[3px] w-full h-auto " ref={messageRef} >
+      <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%] sm:max-w-[75%]">
+
+
+      {
       Main['isFile'] ?
 
-              <div className='h-13 min-w-[200px] gap-4 pr-2 items-center flex'>
+              <div className='h-13 min-w-[200px]  gap-4 pr-2 items-center flex'>
                   <div className='h-[45px] w-[45px] rounded-full bg-slate-700 flex items-center justify-center'>
                     <FileIcon />
                   </div>
-                  <div className='h-full'>
+                  <div className='h-full w-full'>
                     <h2>{Main.filename}</h2>
                     <a
                       onClick={(e) => {
@@ -169,6 +171,10 @@ const TheirMessContainer = ({ Mess,Main }) => {
                     >
                       Download 
                     </a>
+
+
+
+
                   </div>
               </div>
             :
@@ -186,8 +192,9 @@ const TheirMessContainer = ({ Mess,Main }) => {
             )}
         </div>
       }  
-        </div>
+
       </div>
+    </div>
     );
   };
 

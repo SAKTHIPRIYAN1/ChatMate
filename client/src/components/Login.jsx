@@ -70,14 +70,17 @@ const LoginPart=()=>{
                 <h2 className="text-white mr-1">
                     Are You  New to explore here ?
                 </h2>
-             <Link to={"/register"}>   <span className=" text-teal-300 text-md   font-semibold  hover:cursor-pointer hover:underline hover:font-bold " >Explore Now!</span> </Link>
+             <Link to={"/register"}>   <span className=" text-teal-300 text-md   font-semibold  hover:cursor-pointer hover:underline hover:font-bold " >Chat Now!</span> </Link>
                 </div>
-                <h2 className=" text-teal-300  self-start text-md mb-3  font-semibold mt-4 hover:cursor-pointer underline hover:font-bold " >Read this</h2>
-            <Link to="/about">
+        
+                <h2 className=" text-teal-300  self-start text-md mb-3  font-semibold mt-4 hover:cursor-pointer underline hover:font-bold " >Create Account</h2>
+                
+            <Link to="/signup">
                 <button  className="flex self-center ml-3 items-center justify-center active:scale-95  bg-transparent border-[1.5px] hover:bg-slate-100/4.5 px-12 h-12 hover:font-[600] py-1 text-[15px]  font-medium w-[90%] rounded-md  leading-5 text-emerald-300 ">
-                        About Me
+                       Sign Up
                 </button>
             </Link>
+            
         </div>
 
         </div>

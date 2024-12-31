@@ -5,6 +5,10 @@ import { Routes,Route } from "react-router-dom";
 import AboutMe from "./components/AboutMe";
 import MessagePart from "./components/messagePage";
 import PopUp from "./components/TimerRedirect";
+import AnnonChatDet from "./components/AnnonymsConcatDet";
+import SignUp from "./components/SignUp";
+import OtpPage from "./components/OtpPage";
+
 const App=()=>{
   return (
    <Routes>
@@ -12,6 +16,8 @@ const App=()=>{
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/message" element={<MessagePart />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/signup/otp" element={<OtpPage />} />
       <Route path="/about" element={<AboutMe />} />
       <Route path="/popup" element={<PopUp />} />
    </Routes>

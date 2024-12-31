@@ -56,7 +56,7 @@
         @apply hover:font-[600] 
         
     }
-
+    
     /* #238636 */
     .button{
         @apply flex   items-center justify-center active:scale-[0.96]  border-[1.5px]   py-1 text-[15px]  font-medium    leading-5 

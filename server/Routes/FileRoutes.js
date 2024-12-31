@@ -15,7 +15,6 @@ const storage = multer.diskStorage({
   });
 
 const upload = multer({ storage });
-
 const fileRoute=express.Router();
 
 // for uploading filesss in upload folder...

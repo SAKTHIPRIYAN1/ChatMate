@@ -5,6 +5,7 @@ import { useNavigate} from "react-router-dom";
 
 
 import Load from "./Loader";
+import { LoadingProvider, useLoading } from "./Loadingcontext";
 
 // redux....
 import {useDispatch,useSelector} from 'react-redux'
@@ -18,13 +19,18 @@ import { setAnnonymousPair } from "../Store/AnonymousUser";
 import { useSocket } from "../SocketContext";
 
 
+// RandomPass For auth....
+import RandomPass from "../CustomHooks/RandomPass";
+
 const apiUrl = import.meta.env.VITE_BACKURL
 
 const RegisterPage=()=>{
     return(
-        <div className=" fullas transition-all  flex justify-center">
-            <RegisterContainer />  
-        </div>
+        <LoadingProvider>
+            <div className=" fullas transition-all  flex justify-center">
+                <RegisterContainer />  
+            </div>
+        </LoadingProvider>
         
     )
 }
@@ -54,12 +60,14 @@ const RegisterPart=()=>{
     const [err,setErr]=useState("");
     const dispatch=useDispatch();
 
-    const [loading,setloading]=useState(false);
+    const {loading,setLoading}=useLoading();
 
     // interest from the store....
     const [activePreferences,setactive]=useState(new Set(useSelector((store)=>store.UserReg.interest)));
     const [name,setName]=useState(useSelector((store)=>store.UserReg.name));
-    console.log(name);
+    
+    
+    // console.log(name);
     // let activePreferences=new Set(useSelector((store)=>store.UserReg.interest))
 
     // scoket connection...
@@ -67,9 +75,7 @@ const RegisterPart=()=>{
 
     useEffect(() => {
         if (socket!==null) {
-            socket.on("connect", () => {
-                console.log("Socket connected");
-            });
+            
 
             socket.on("disconnect", () => {
                 console.log("Socket disconnected");
@@ -90,10 +96,10 @@ const RegisterPart=()=>{
                 dispatch(setAnnonymousPair(UserInfo));
                 console.log(socketid);
                 dispatch(setUserSock(socketid));
-                setloading(false);
+                setLoading(false);
                 navigate("/message");
             } else {
-                setloading(false);
+                setLoading(false);
                 setErr("No pair Found...");
             }
     };
@@ -129,22 +135,36 @@ const RegisterPart=()=>{
    
 // connect to the socket....
     const handleSubmit = async (e) => {
+
+        // connecting with the pair after clickung the submit
+        socket.on("connect", () => {
+            console.log("Socket connected");
+        });
+
+       let RandomPassKey = RandomPass.GenerateRandomPass(name);
+
+
         e.preventDefault();
-        setloading(true)
+        
         try {
+            setLoading(true);
             let tmp=[...activePreferences];
-            tmp=tmp.sort()
-            socket.emit('newRegister', {name,interest:tmp});
+            tmp=tmp.sort();
+            console.log(RandomPassKey,"client....");
+            socket.emit('newRegister', {name,interest:tmp,pass:RandomPassKey});
             console.log("sent...");
+
         } catch (error) {
-            setloading(false)
+            setLoading(false)
             console.log("Error fetching data:", error);
             setErr(error);
         }
+       
         
         dispatch(setUserName(name));
     }
 
+  
     if(loading)
         return(<Load/>)
 

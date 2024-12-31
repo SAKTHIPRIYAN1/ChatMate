@@ -1,13 +1,23 @@
 
 import AnnonChatDet from "./AnnonymsConcatDet";
 import {GlobeIc,UserIc,EditIC,MenuIc,ReqIcon} from "./svg";
+import { useSelector } from "react-redux";
 
 const ConcatDescrip=({loading,setLoading})=>{
+
+    const isVisi=useSelector((store)=>store.AnnonDes.isVisi);
+    console.log(isVisi)
     return (
-       <div className="contactContain select-none flex h-[100%] w-[35%] min-w-[400px] sm:hidden md:w-[]  ">
-        <MenuBar />
-        <AnnonChatDet  />
-       </div>
+        <>
+        <div className="contactContain select-none   flex sm:hidden h-[100%] w-[35%] min-w-[400px]  ">
+            <MenuBar />
+            <AnnonChatDet  />
+        </div>
+        <div className={`contactContain select-none  hidden  h-[100%] w-full  absolute z-20 min-w-[400px] ${+isVisi?" sm:flex":''}` }>
+            <MenuBar />
+            <AnnonChatDet  />
+        </div>
+       </>
     )
 }
 
@@ -37,7 +47,7 @@ const MenuBar=()=>{
 
         ]
     return(
-        <div className="h-[100%]      w-[90px] transition-all transparent flex flex-col gap-0"> 
+        <div className="h-[100%]  sm:hidden w-[90px] transition-all transparent flex flex-col gap-0"> 
                 {
                     MenuArr.map((el,ind)=>{
                         return (

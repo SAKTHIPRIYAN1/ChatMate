@@ -8,6 +8,8 @@ import { clearAnnonMess } from "../Store/AnnonymousMessages";
 
 import { setUserSock } from "../Store/RegisterUser";
 
+import RandomPass from "./RandomPass";
+
 const ChangePersonHook=({setLoading})=>{
 
     const [err,setErr]=useState("");
@@ -44,13 +46,13 @@ const ChangePersonHook=({setLoading})=>{
         
         };
 
-        // Listen 
+        // Listen .......
         if (socket) {
             socket.on("ack", handleAckow);
         }
 
         
-    }, [socket]); 
+    }, []); 
 
 
   const ChangePerson = () => {
@@ -58,7 +60,8 @@ const ChangePersonHook=({setLoading})=>{
         try{
         console.log("changing person");
         dispatch(clearAnnonMess())
-        socket.emit("changeperson", { sockid, name, interest });
+        const pass=RandomPass.GenerateRandomPass()
+        socket.emit("changeperson", { sockid, name, interest,pass});
         }
         catch(err){
             console.log("change err:",err);

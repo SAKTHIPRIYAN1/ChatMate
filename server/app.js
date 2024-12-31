@@ -2,16 +2,22 @@ import express from "express";
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 import socketSetup from "./socket.js";
 import multer from "multer";
 
 let app=express();
+// db import...
+import connectToDb from "./db.js";
+
 // routes import..
 import frt from './Routes/FileRoutes.js'
+import SignUpRoutes from "./Routes/SignUpRoutes.js";
 
+
+const SignUpRoute=SignUpRoutes.SignUpRoute;
 
 // og routess..
 const fileRoute=frt.fileRoute;
@@ -27,16 +33,23 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(bodyParser.json());
 
+
+
+// connecting databse with the backend...
+connectToDb();
 
 // Define __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Use it in your app
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -47,9 +60,12 @@ app.get("/",(req,res)=>{
 })
 
 
+// connecting the routes with the router....
 app.use('/file',fileRoute);
+app.use('/signUp',SignUpRoute);
 
 
+// fileDownload route for messaing.........
 app.get('/uploads/:filename', (req, res) => {
   const storedFilename = req.params.filename; // Get the stored filename
   const filePath = path.join(__dirname, 'uploads', storedFilename);
@@ -72,8 +88,6 @@ app.get('/uploads/:filename', (req, res) => {
     }
   });
 });
-
-
 
 
 let AppServer=app.listen(3000,()=>{
