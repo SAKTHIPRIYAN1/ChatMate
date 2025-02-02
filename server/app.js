@@ -15,7 +15,15 @@ import connectToDb from "./db.js";
 // routes import..
 import frt from './Routes/FileRoutes.js'
 import SignUpRoutes from "./Routes/SignUpRoutes.js";
+import { refreshTokenHandler } from "./Controllers/refreshTokController.js";
 
+import loginRoute from "./Routes/loginRoute.js";
+import requestRoute from "./Routes/requestRoute.js";
+
+import { changePasswordRequest,ConfirmPassword } from "./Controllers/LoginController.js";
+
+import PreAuthRoute from "./SimpleRoutes.js";
+// for refresh Token ......
 
 const SignUpRoute=SignUpRoutes.SignUpRoute;
 
@@ -60,9 +68,18 @@ app.get("/",(req,res)=>{
 })
 
 
+app.use((req, res, next) => {
+  console.log('Request Path:', req.path);
+  next();
+});
+
+app.use('/saveUser',requestRoute);
 // connecting the routes with the router....
+app.post('/refresh-token',refreshTokenHandler);
 app.use('/file',fileRoute);
 app.use('/signUp',SignUpRoute);
+app.use('/login',loginRoute);
+app.use('/preauth',PreAuthRoute);
 
 
 // fileDownload route for messaing.........
@@ -88,6 +105,11 @@ app.get('/uploads/:filename', (req, res) => {
     }
   });
 });
+
+
+app.post("/changePassword",changePasswordRequest);
+app.post("/confirmPassword",ConfirmPassword);
+ 
 
 
 let AppServer=app.listen(3000,()=>{

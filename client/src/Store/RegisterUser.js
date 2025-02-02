@@ -12,15 +12,12 @@ const UserRegSlice=createSlice({
     reducers:{
         alter:(state,action)=>{
             state.interest=action.payload;
-            // console.log("from store(userSlice) :",state.interest)
         },
         setUserSock:(state,action)=>{
             state.socketId=action.payload;
-            // console.log("from store(userSlice) :",state.socketId);
         },
         setUserName:(state,action)=>{
             state.name=action.payload;
-            // console.log("from store(userSlice) :",state.name);
         }
     },
 });

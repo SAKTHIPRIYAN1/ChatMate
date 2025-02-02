@@ -21,8 +21,11 @@ import { useSocket } from "../SocketContext";
 
 // RandomPass For auth....
 import RandomPass from "../CustomHooks/RandomPass";
+import toast from "react-hot-toast";
 
 const apiUrl = import.meta.env.VITE_BACKURL
+
+
 
 const RegisterPage=()=>{
     return(
@@ -57,7 +60,7 @@ const RegisterPart=()=>{
 
     const navigate=useNavigate();
     
-    const [err,setErr]=useState("");
+
     const dispatch=useDispatch();
 
     const {loading,setLoading}=useLoading();
@@ -100,7 +103,15 @@ const RegisterPart=()=>{
                 navigate("/message");
             } else {
                 setLoading(false);
-                setErr("No pair Found...");
+                toast.error("No Pair Found", {
+                    duration: 3000,
+                    position: 'top-right',
+                    
+                      style: {
+                      color: '#fff',
+                      backgroundColor:'rgba(39, 50, 73, 0.934)',
+                      },
+                    });
             }
     };
 
@@ -132,7 +143,7 @@ const RegisterPart=()=>{
         console.log(code);
         return code==200;
     }
-   
+   const UserId=useSelector((store)=>store.User.id);
 // connect to the socket....
     const handleSubmit = async (e) => {
 
@@ -151,7 +162,7 @@ const RegisterPart=()=>{
             let tmp=[...activePreferences];
             tmp=tmp.sort();
             console.log(RandomPassKey,"client....");
-            socket.emit('newRegister', {name,interest:tmp,pass:RandomPassKey});
+            socket.emit('newRegister', {name,interest:tmp,pass:RandomPassKey,UserId});
             console.log("sent...");
 
         } catch (error) {
@@ -192,7 +203,7 @@ const RegisterPart=()=>{
                 </form>
                 
             </div> 
-            <i className="text-red-300 mt-2">{err}</i> 
+            
         </div>
 
 

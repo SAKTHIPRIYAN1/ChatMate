@@ -15,8 +15,14 @@ const userHistory = {}; // Map of userId to an array of {partnerId, timestamp}
 const BLOCK_DURATION = 60 * 60 * 1000;
 
 function updateHistory(userId, partnerId) {
-    if(userId==partnerId)
-        console.log("same...")
+    
+    if(userId==partnerId){
+        console.log("ch111",userId,partnerId);
+        console.log("same...");
+        return;
+    }
+
+
 
     const now = Date.now();
     userHistory[userId] = userHistory[userId] || [];
@@ -62,18 +68,18 @@ class AnonymousChatting{
         this.SenderReciverMap={};
         this.readyUser=null;
         this.connected=false;
-        this.maxTime=10000;
+        this.maxTime=5000;
         this.io=undefined;
     }
 
-    insert(name,interest,socketid,pass){
+    insert(name,interest,socketid,pass,UserId){
         console.log(pass);
         this.UserMap[socketid]=name;
-        this.generalQueue.push({socketid,name,interest,time:Date.now(),pass})
+        this.generalQueue.push({socketid,name,interest,time:Date.now(),pass,UserId})
         
         interest.forEach(inter => {
             if (this.interestQueues[inter]) {
-                this.interestQueues[inter].push({socketid,name, interest,time:Date.now(),pass});
+                this.interestQueues[inter].push({socketid,name, interest,time:Date.now(),pass,UserId});
             } else {
                 console.warn(`Interest ${interest} not recognized.`);
             }
@@ -104,10 +110,12 @@ class AnonymousChatting{
         return null;
     }
     try_to_connect(socket,io) {
-
+console.log("General Queue",this.generalQueue);
+console.log("user Hstory",userHistory);
         if (this.generalQueue.length ==0 && this.readyUser==null){
             return;
         }
+
 
         if (this.generalQueue.length > 0) {
             if (!this.readyUser) {
@@ -125,9 +133,8 @@ class AnonymousChatting{
             if (pairedUser) {
 
                 console.log("Paired sss with:", pairedUser.name);
-                console.log(pairedUser);
+                console.log("ch1",pairedUser.pass,this.readyUser.pass);
                 updateHistory(this.readyUser.pass,pairedUser.pass)
-
                 console.log(userHistory,"userhis2");
                 this.sendMess(pairedUser,this.readyUser,SuccessCode);
                 this.sendMess(this.readyUser,pairedUser,SuccessCode);
@@ -136,15 +143,16 @@ class AnonymousChatting{
             } else {
                 const curtime=Date.now();
                 let timeInter=curtime-this.readyUser.time;
-                // console.log(timeInter,this.maxTime);
+                console.log(timeInter,this.maxTime);
                 if(timeInter >=this.maxTime ){
                     // const newPairedUser=this.generalQueue.shift();
-                    // console.log("random pair")
+                    console.log("random pair");
                     let mrk=null;
                     for(let newPairedUser of this.generalQueue){
                         console.log(newPairedUser);
                         console.log(hasPairedBefore(this.readyUser.pass, newPairedUser.pass))
                         if(!hasPairedBefore(this.readyUser.pass, newPairedUser.pass)){
+                            console.log("ch2",this.readyUser.pass,newPairedUser.pass);
                             updateHistory(this.readyUser.pass,newPairedUser.pass)
                             this.sendMess(newPairedUser,this.readyUser,SuccessCode);
                             this.sendMess(this.readyUser,newPairedUser,SuccessCode);
@@ -153,30 +161,43 @@ class AnonymousChatting{
                             break;
                         }
                     }
+                console.log("mark:",mrk);
                 if(mrk){
                     this.generalQueue=this.generalQueue.filter((usr)=>{
                         return usr!=mrk;
                     });
                 }
-                    
+
+                let timeInter=curtime-this.readyUser.time;
+                console.log("time",timeInter);
+                if(timeInter>15000){
+                    console.log("ready Usertime out SO ,, ejected...")
+                    this.sendMess(this.readyUser,null,FailureCode);
+                    this.removeFromInterestQueues(this.readyUser);
+                    this.readyUser=null;
+                }
+                    setTimeout(() => this.try_to_connect(socket,io), 1000); 
+                  
                 }
                 else{
-            console.log("No pair found but still waiting......");
-            const curtime=Date.now();
-            let timeInter=curtime-this.readyUser.time;
-            if(timeInter>15000){
-                console.log("ready Usertime out SO ,, ejected...")
-                this.sendMess(this.readyUser,null,FailureCode);
-                this.removeFromInterestQueues(this.readyUser);
-                this.readyUser=null;
-            }
-                setTimeout(() => this.try_to_connect(socket,io), 1000);
+                console.log("No pair found but still waiting......");
+                const curtime=Date.now();
+                let timeInter=curtime-this.readyUser.time;
+                console.log("time",timeInter);
+                if(timeInter>15000){
+                    console.log("ready Usertime out SO ,, ejected...")
+                    this.sendMess(this.readyUser,null,FailureCode);
+                    this.removeFromInterestQueues(this.readyUser);
+                    this.readyUser=null;
                 }
+                    setTimeout(() => this.try_to_connect(socket,io), 1000);
+                    }
             }
         }
         else if(this.readyUser){ 
             const curtime=Date.now();
-                let timeInter=curtime-this.readyUser.time;
+            let timeInter=curtime-this.readyUser.time;
+            console.log("jiii");
             if(timeInter>15000){
                 this.sendMess(this.readyUser,null,FailureCode);
                 this.removeFromInterestQueues(this.readyUser);
@@ -202,6 +223,7 @@ class AnonymousChatting{
         }
     }
     
+     
     sendMess(sender,UserInfo,code){
         console.log("sent...")
         if(UserInfo){
@@ -209,7 +231,7 @@ class AnonymousChatting{
             console.log(this.SenderReciverMap);
         }
         const RecipScoketId=sender.socketid;
-        this.io.to(RecipScoketId).emit("ack", {code,UserInfo,socketid:sender.socketid});
+        this.io.to(RecipScoketId).emit("ack", {code,UserInfo,socketid:sender.socketid,recipPass:sender.pass,recipId:sender.recipId});
         this.removeFromInterestQueues(sender)
     }
 
@@ -268,8 +290,11 @@ const DisconnectAction=(cls,socketid)=>{
 
 
 
+
+let io;
+
 const socketSetup=(AppServer)=>{
-    const io=new Server(AppServer,{
+    io=new Server(AppServer,{
         cors:process.env.URL,
         methods:["GET","POST"],
     })
@@ -279,12 +304,12 @@ const socketSetup=(AppServer)=>{
     io.on("connection",(socket)=>{
         cls.io=io;
         console.log("a user connected");
-        socket.on("newRegister",({name,interest,pass})=>{
+        socket.on("newRegister",({name,interest,pass,UserId})=>{
             console.log("from ",name,":",interest);
 
             try {
                 console.log(pass);
-                cls.insert(name, interest, socket.id,pass);
+                cls.insert(name, interest, socket.id,pass,UserId);
             } catch (error) {
                 console.log("Failed to insert user:", error);
             }
@@ -294,12 +319,12 @@ const socketSetup=(AppServer)=>{
             
         });
 
-        socket.on("changeperson",({sockid,name,interest,pass})=>{
+        socket.on("changeperson",({sockid,name,interest,pass,UserId})=>{
             DisconnectAction(cls,sockid);
             // crearting new instances.......
             try {
                 console.log(name, interest, socket.id);
-                cls.insert(name, interest, socket.id,pass);
+                cls.insert(name, interest, socket.id,pass,UserId);
             } catch (error) {
                 console.log("Failed to insert user:", error);
             }
@@ -337,6 +362,10 @@ const socketSetup=(AppServer)=>{
         });
     });
 
+}
+
+export const getIo=()=>{
+    return io;
 }
 
 export default socketSetup;

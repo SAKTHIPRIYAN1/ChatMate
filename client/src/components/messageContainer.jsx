@@ -4,26 +4,39 @@ import { useSelector } from "react-redux";
 import axios from 'axios';
 const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 import { FileIcon } from './svg';
+import MessOptions from './MessageOptions';
+
+import { MenuDownIcon } from './svg';
+
+
+const HandleMenuOptions=(e)=>{
+  console.log("menu Clickd for a message:",e);
+}
+
  const MessageContainer=({isYou,Mess,Main})=>{
     return(
-        <div>
+        <div className='relative'>
             {
                 isYou ? <YourMessContainer Mess={Mess} Main={Main} /> : <TheirMessContainer Mess={Mess} Main={Main} />
             }
+            
         </div>
     )
  }
+
+
+ 
 
  const YourMessContainer = ({ Mess,Main }) => {
   const OtherUserName = useSelector((store) => store.AnnRecip.recipName);
     const [isExpanded, setIsExpanded] = useState(false);
     const messageRef = useRef(null);
-  
+    const [Options ,setOptions]=useState(false);
     const toggleReadMore = () => {
       setIsExpanded(!isExpanded);
     };
 
-    console.log(Main);
+   
     // Auto scroll 
     useEffect(() => {
       if (messageRef.current) {
@@ -58,8 +71,14 @@ import { FileIcon } from './svg';
 
   
     return (
-      <div className="flex items-center justify-end p-[3px] w-full h-auto " ref={messageRef} >
-      <div className="bg-teal-950/90 p-2 rounded-md flex flex-col max-w-[55%] sm:max-w-[75%]">
+      <div className="flex items-center justify-end p-[3px] group relative w-full cursor-pointer h-auto " ref={messageRef} >
+        <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>{setOptions(!Options);} }>
+        <MenuDownIcon />
+        </div>
+
+        {Options}
+
+      <div className="bg-teal-950/90 p-2 rounded-md flex flex-col max-w-[55%] pr-16 sm:max-w-[75%]">
 
 
       {
@@ -81,10 +100,6 @@ import { FileIcon } from './svg';
                     >
                       Download 
                     </a>
-
-
-
-
                   </div>
               </div>
             :
@@ -148,9 +163,11 @@ const TheirMessContainer = ({ Mess,Main }) => {
     }, [isExpanded, Mess]);
   
     return (
-      <div className="flex items-center justify-start p-[3px] w-full h-auto " ref={messageRef} >
-      <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%] sm:max-w-[75%]">
-
+      <div className="flex items-center justify-start p-[3px] group  w-full h-auto cursor-pointer " ref={messageRef} >
+      <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%] relative pr-16  sm:max-w-[75%]">
+      <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>{setOptions(!Options)}} > 
+        <MenuDownIcon />
+        </div>
 
       {
       Main['isFile'] ?

@@ -19,7 +19,7 @@ const ConcatDescrip=({loading,setLoading})=>{
         </div>
        </>
     )
-}
+};
 
 const MenuBar=()=>{
     let MenuArr=[
@@ -73,8 +73,5 @@ const MenuContent=(prop)=>{
         </div>
     )
 }
-
-
-
 
 export default ConcatDescrip;

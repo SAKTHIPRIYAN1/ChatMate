@@ -1,8 +1,13 @@
 import React, { useRef, useState ,useEffect,useLayoutEffect} from "react";
 import axios from "axios";
 const VITE_BACKURL = import.meta.env.VITE_BACKURL;
-
 import { useLoading } from "./Loadingcontext";
+import toast from "react-hot-toast";
+
+import { useNavigate } from "react-router-dom";
+
+import { PreAuth } from "../simpleFunctions";
+
 
 const OtpPage = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -42,6 +47,27 @@ const OtpPage = () => {
     }
   };
 
+  const navigate=useNavigate();
+
+
+  useLayoutEffect(() => {
+    const stat = async () => {
+      try {
+        const status = await PreAuth("otp");
+        console.log(status);
+        if (status !== 200) {
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Error during pre-authentication:", error);
+        navigate("/login"); 
+      }
+    };
+
+    stat(); 
+  }, [navigate]);
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const otpValue = otp.join("");
@@ -55,10 +81,40 @@ const OtpPage = () => {
             setLoading(false);
             console.log("verifying Otp with backend...");
             console.log(res.data);
+
+            if(res.data && res.data.pass){
+              toast.success("OTP verification Success", {
+                duration: 3000,
+                position: 'top-right',
+                
+                  style: {
+                  color: '#fff',
+                  backgroundColor:'rgba(39, 50, 73, 0.934)',
+                  },
+                });
+              navigate("/changePass",{ state: { isConfirmPass: true }})
+            }
+
+            
         }
         catch(err){
-          setLoading(false);
-            console.log("error:",err);
+        setLoading(false);
+        
+          if(err){
+
+            toast.error(err.response.data.msg, {
+              duration: 3000,
+              position: 'top-right',
+              
+                style: {
+                color: '#fff',
+                backgroundColor:'rgba(39, 50, 73, 0.934)',
+                },
+              });
+          console.log("error:",err.response.data);
+          }
+
+          // console.log(err.response.data.msg);
         }
         
       // Add OTP submission logic here
@@ -71,6 +127,7 @@ const OtpPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen ">
+         
       <div className="flex flex-col items-center justify-center border-[2px] max-w-4xl sm:min-w-sm sm:px-7 border-slate-300 px-20 py-12 rounded-md bg-transparent_tone">
         <h1 className="text-4xl bold mb-4 sm:text-xl text-teal-300">Verify Your Account</h1>
       <h2 className="text-2xl sm:text-lg mb-4 text-center">We are sending Otp to valiadte your email address,OTP has been sent to your Registered Email,Hang On!</h2>
@@ -94,7 +151,7 @@ const OtpPage = () => {
         ))}
       </form>
       <div className="flex mt-4 gap-10">
-        <ResendOtpButton />
+        <ResendOtpButton func={setOtp} />
 
         {
           !loading ?<button
@@ -119,7 +176,7 @@ const OtpPage = () => {
 };
 
 
-const ResendOtpButton = () => {
+const ResendOtpButton = ({func}) => {
     const [timeLeft, setTimeLeft] = useState(20); // Timer starts at 20 seconds
     const [isDisabled, setIsDisabled] = useState(true);
 
@@ -127,13 +184,35 @@ const ResendOtpButton = () => {
         setTimeLeft(20); // Reset timer to 20 seconds
         setIsDisabled(true);
         e.preventDefault();
+        func(new Array(6).fill(""));
             try {
                 let res=await axios.get(VITE_BACKURL+'/signUp/resend-otp',{withCredentials:true});
                 console.log("resend  Otp with backend...");
+                toast.success("OTP Sent successfully.", {
+                  duration: 3000,
+                  position: 'top-right',
+                    style: {
+                    color: '#fff',
+                    backgroundColor:'rgba(39, 50, 73, 0.934)',
+                    },
+                  });
                 console.log(res.data);
             }
+
             catch(err){
-                console.log("error:",err);
+              
+              if(err.response){
+                toast.error(err.response.data.msg, {
+                  duration: 3000,
+                  position: 'top-right',  
+                    style: {
+                    color: '#fff',
+                    backgroundColor:'rgba(39, 50, 73, 0.934)',
+                    },
+                });
+
+              console.log("error:",err.response.data);
+              }
             }
       }
    

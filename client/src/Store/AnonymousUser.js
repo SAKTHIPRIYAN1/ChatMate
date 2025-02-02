@@ -1,10 +1,12 @@
 import { createAsyncThunk,createSlice } from "@reduxjs/toolkit";
 
 const initialState={
-    recipName:undefined,
+    recipName:null,
     recipInter:[],
     hasRecip:false,
-    recipSock:undefined
+    recipSock:undefined,
+    recipPass:undefined,
+    recipId:null
 }
 export 
 const RecipSlice=createSlice({
@@ -19,13 +21,18 @@ const RecipSlice=createSlice({
             state.recipSock=socketid;
             console.log("from store(annonymous):",state.recipInter,"::",interest,"::",state.recipSock);
             
+            state.recipPass=action.payload.pass;
+            state.recipId=action.payload.UserId;
+            console.log(state.recipId);
+
             state.hasRecip=true;
         },
         ClearAnnonRecip:(state,action)=>{
             state.hasRecip=false;
             state.recipInter=undefined;
             state.recipInter=[];
-            
+            state.recipPass=undefined;
+            state.recipId=null;
             // console.log("from store : Annonymous Recip Cleared");
         }
     }

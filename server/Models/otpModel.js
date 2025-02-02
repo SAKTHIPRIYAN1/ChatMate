@@ -6,17 +6,23 @@ import mongoose, { model } from 'mongoose';
 
 const OtpSchema=mongoose.Schema({
     email: {
-        type: String,
-        required: true,
+      type:String,
+      required: true,
       },
       otp: {
         type: Number,
         required: true
       },
+      purpose:{
+        type:String,
+        trim:true,
+        required:true,
+        lowercase:true
+      },
       createdAt: { 
         type: Date, 
         default: Date.now, 
-        // expires: 60*15*1000 // expiry
+        expires: 60*15*1000 // expiry
       }
     
 })
@@ -29,10 +35,11 @@ OtpSchema.statics.generateOtp = function () {
 };
 
 // save otp...
-OtpSchema.statics.saveOtp=async function (email,otp){
+OtpSchema.statics.saveOtp=async function (email,otp,purpose){
   const otpDoc = new this({
     email:email,
     otp:otp,
+    purpose
   })
   
   try{
@@ -63,7 +70,6 @@ OtpSchema.statics.verifyOtp = async function (email,usedOtp){
 
     return 200; 
   } catch (err) {
-
     console.error("Error:", err.message);
     throw new Error(err.message);
   }

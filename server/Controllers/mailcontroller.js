@@ -5,10 +5,19 @@ import 'dotenv/config';
 
 
 
-const sendMail=async (email,otp)=>{
+const sendMail=async (email,otp,purpose)=>{
     
 let {PMAIL,PPASS}= process.env;
-
+const signInContent=`  <h3>The Otp for confirming your E-mail is give below.</h3>
+            <h3>Do not Share this!!!!</h3>
+            <h2 style="user-select:none;color:red;font-weight:bolder">${otp}</h2>
+            <h3>Use this to Signing Up the Site.</h3>
+        ` 
+const changePasswordContent=`  <h3>The Otp for confirming your E-mail is give below.</h3>
+                                <h3>Do not Share this!!!!</h3>
+                                <h2 style="user-select:none;color:red;font-weight:bolder">${otp}</h2>
+                                <h3>Use this to Change Your Password.</h3>
+                            ` 
 const transporter =  nodemailer.createTransport({
     service:'gmail',
     host: "smtp.gmail.com",
@@ -28,11 +37,7 @@ const transporter =  nodemailer.createTransport({
     to: [email],
     subject: "Otp for signing Up ChatMate",
     text:"The Otp for confirming your E-mail is give below.",
-    html:`  <h3>The Otp for confirming your E-mail is give below.</h3>
-            <h3>Do not Share this!!!!</h3>
-            <h2 style="user-select:none;color:red;font-weight:bolder">${otp}</h2>
-            <h3>Use this to Signing Up the Site.</h3>
-        ` 
+    html:purpose=="Sign-In"?signInContent: changePasswordContent
   }
  
     try{

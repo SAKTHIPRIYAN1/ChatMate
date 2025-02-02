@@ -1,7 +1,7 @@
 import svg from "../assets/imag.png";
 import { useSelector,useDispatch } from "react-redux";
 import ChangePersonHook from "../CustomHooks/ChangePersonHook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { setDesVisible } from "../Store/AnnonDesslice";
@@ -11,8 +11,22 @@ import { useLoading } from "./Loadingcontext";
 
 import { useSocket } from "../SocketContext";
 // for redirect to reg page..
-import useRegRedirect from "../CustomHooks/RegRedirectMethod";
 
+
+
+import useRegRedirect from "../CustomHooks/RegRedirectMethod";
+import axios from "axios";
+
+
+import RandomPass from "../CustomHooks/RandomPass";
+import store from "../Store/store";
+
+
+// toast importing...
+import toast from "react-hot-toast";
+
+
+const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 const AnnonChatDet=()=>{
     const val=useSelector((store)=>store.AnnRecip.hasRecip);
     const navigate=useNavigate();
@@ -37,6 +51,7 @@ const AnnonChatDet=()=>{
 
     )
 }
+
 const SearchBar=()=>{
     return(
         <div className="w-auto bg-slate-600/80 rounded-full h-10 mx-4 my-1">
@@ -46,6 +61,8 @@ const SearchBar=()=>{
 };
 
 const AnnonDes=()=>{
+
+
     const dispatch=useDispatch();
     const {socket}=useSocket();
     
@@ -58,17 +75,78 @@ const AnnonDes=()=>{
     const InterestArr=useSelector((store)=>store.AnnRecip.recipInter);
     console.log(RecipName,InterestArr);
 
+    const [saved,setSave]=useState(false);
+
     const handleNext=()=>{
         setLoading(true);
         ChangePerson(setLoading);
     }
+
     const navigate=useNavigate();
 
     const handleRedirect=()=>{
         useRegRedirect({dispatch,socket,sockid});
+    };
+
+    // getting the user if logged in from store or try to get the unique pass from the local storageee....
+    // If not there ,, create a new pass
+
+        const isLoggedin=useSelector((store)=>store.User.isLoggedin);
+        const sendPass=RandomPass.GenerateRandomPass();
+        const sendId=useSelector((store)=>store.User.id);
+
+        const recipPass=useSelector((store)=>store.AnnRecip.recipPass);
+        const recipId=useSelector((store)=>store.AnnRecip.recipId);
+
+        const sendName=useSelector((store)=>store.UserReg.name);
+        const recvName=useSelector((store)=>store.AnnRecip.recipName);
+
+        const recipSock=useSelector((store)=>store.AnnRecip.recipSock);
+    const handleSave=async ()=>{
+        let annonymous=[];
+        const recvAuth=recipId?recipId:recipPass;
+        const sendAuth=isLoggedin?sendId:sendPass;
+        
+
+        // console.log(sendAuth,recipAuth,sendName,recvName);
+
+        if(!isLoggedin){
+            annonymous.push("sender");
+        }
+
+        if(!recipId){
+            annonymous.push("receiver");
+        }
+
+
+        try{
+            const res=await axios.post(VITE_BACKURL+"/saveUser",{sender:sendName,receiver:recvName,sendAuth,recvAuth,annonymous,recipSock},{withCredentials:true});
+            console.log(res.data.msg);
+            toast.success(res.data.msg, {
+                duration: 3000,
+                position: 'top-right',
+                
+                  style: {
+                  color: '#fff',
+                  backgroundColor:'rgba(39, 50, 73, 0.934)',
+                  },
+                });
+            setSave(true);
+            console.log("Request Sent Successfully.....");
+        }
+        catch(err){
+                toast.error(err.response.data.msg, {
+                    duration: 3000,
+                    position: 'top-right',
+                    
+                      style: {
+                      color: '#fff',
+                      backgroundColor:'rgba(39, 50, 73, 0.934)',
+                      },
+                    });
+                console.log("error:",err.response.data);
+        }
     }
-
-
 
     return(
         <div className="h-full w-full flex  overflow-scroll pb-8 items-center flex-col mt-3">
@@ -99,11 +177,17 @@ const AnnonDes=()=>{
         <div className="h-full items-center flex  gap-3 justify-between">
         <button className="button px-5 w-[50%] h-10 text-lg max-w-[200px]  rounded-full bg-teal-900/90" onClick={handleNext}>
                     Next
-                </button>
+        </button>
                 
-                <button className="button w-[50%] px-5  h-10 text-lg max-w-[200px] bg-sender rounded-full">
-                    Save
-                </button>
+        {
+            !saved?<button className="button w-[50%] px-5  h-10 text-lg max-w-[200px] bg-sender rounded-full" onClick={handleSave}>
+            Save
+            </button>
+            :
+            <button className="button active:scale-100 w-[50%] px-5  h-10 text-lg max-w-[200px] hover:cursor-not-allowed bg-slate-600 opacity-65 rounded-full" >
+            Requested..
+            </button>
+        }
 
                 
            </div>

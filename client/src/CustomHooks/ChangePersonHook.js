@@ -9,7 +9,7 @@ import { clearAnnonMess } from "../Store/AnnonymousMessages";
 import { setUserSock } from "../Store/RegisterUser";
 
 import RandomPass from "./RandomPass";
-
+import toast from "react-hot-toast";
 const ChangePersonHook=({setLoading})=>{
 
     const [err,setErr]=useState("");
@@ -21,6 +21,7 @@ const ChangePersonHook=({setLoading})=>{
     const interest=useSelector((store)=>store.UserReg.interest)
     const sockid=useSelector((store)=>store.UserReg.socketId)
 
+    const UserId=useSelector((store)=>store.User.id);
     
     useEffect(() => {
         // Clean up listener when the component unmounts
@@ -36,6 +37,15 @@ const ChangePersonHook=({setLoading})=>{
                 dispatch(setUserSock(socketId))
                 console.log("set to false...")
             } else {
+                toast.error("No Pair Found", {
+                    duration: 3000,
+                    position: 'top-right',
+                    
+                      style: {
+                      color: '#fff',
+                      backgroundColor:'rgba(39, 50, 73, 0.934)',
+                      },
+                    });
                 console.log("NO PAIR FOUND....")
                 setLoading(false);
             }
@@ -52,8 +62,7 @@ const ChangePersonHook=({setLoading})=>{
         }
 
         
-    }, []); 
-
+    }, [socket])
 
   const ChangePerson = () => {
         dispatch(ClearAnnonRecip());
@@ -61,7 +70,7 @@ const ChangePersonHook=({setLoading})=>{
         console.log("changing person");
         dispatch(clearAnnonMess())
         const pass=RandomPass.GenerateRandomPass()
-        socket.emit("changeperson", { sockid, name, interest,pass});
+        socket.emit("changeperson", { sockid, name, interest,pass,UserId});
         }
         catch(err){
             console.log("change err:",err);

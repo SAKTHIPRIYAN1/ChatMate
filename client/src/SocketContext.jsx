@@ -11,6 +11,7 @@ import { clearAnnonMess } from './Store/AnnonymousMessages';
 import { ClearAnnonRecip } from './Store/AnonymousUser';
 import store from './Store/store';
 
+import toast from 'react-hot-toast';
 
 const apiUrl = import.meta.env.VITE_BACKURL;
 export const SocketProvider = ({ children }) => {
@@ -38,11 +39,14 @@ export const SocketProvider = ({ children }) => {
                 console.log("Connection Error : websocket failed to connect check your server");
             });
 
+
+            // for receiving normal message....
             newSocket.on("ReceiveMessage",(message)=>{
                 console.log("received Message:",message);
                 dispatch(addNewAnnonMess({isYou:false,mess:message,isFile:false}));
             });
 
+            
             newSocket.on("senderDisconnected", () => {
                 console.log("Receiver Disconnected....");
                 dispatch(clearAnnonMess());
@@ -50,7 +54,33 @@ export const SocketProvider = ({ children }) => {
                 // navigate("/register");
             });
 
+            // // for save request.....
+            newSocket.on("saveReq",({sender,sendAuth})=>{
+                console.log("Save request came from",sender);
 
+                toast((t) => (
+                    <span className="flex items-center gap-2 bg-sender">
+                      Save Request from <b className='font-bold text-teal-400 '>{sender}</b>
+                      <button
+                        className="ml-2 px-2 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
+                        onClick={() => toast.dismiss(t.id)}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="ml-2 px-2 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
+                        onClick={() => toast.dismiss(t.id)}
+                      >
+                       Decline
+                      </button>
+                    </span>
+                  ), {
+                    position: "top-right", // Move toast to the top-right corner
+                    duration: 3000, // Toast will disappear after 4 seconds
+                  });
+            })
+
+            // for receiving file....
             newSocket.on('receiveFile', ({ filePath, name }) => {
                     console.log("file received...",filePath,name)
                     dispatch(addNewAnnonMess(

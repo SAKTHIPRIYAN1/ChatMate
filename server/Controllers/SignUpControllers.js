@@ -13,7 +13,7 @@ import 'dotenv/config'
 // first make the jwt for storing  pass and user name..
 // send to client..
 
-const hashPassword=async (password)=>{
+export const hashPassword=async (password)=>{
     let saltround=10;
     let hashedPassword=await bcrypt.hash(password,saltround);
     return hashedPassword;
@@ -27,21 +27,36 @@ const ListTostring=(otp)=>{
     return str;
 }
 
-const extractToken=(otpToken)=>{
-    jwt.verify(otpToken,process.env.OTP_SECRET,(err,data)=>{
-        if(err){
-            return {};
-        }
-        console.log(data);
-        return data;
-    });
 
-    return {};
-}
 
 export const SignUpInitazation= async (req,res)=>{
     console.log(req.body);
-    const {email,password,name}=req.body;
+    const {email,password,name,id}=req.body;
+
+    // chcking for the user-d's uniqueness...
+    try{
+        const user= await User.findOne({id});
+        if(user){
+         return res.status(500).json({msg:"UserId has already taken."});
+        }
+     }
+     catch(err){
+         console.log(err);
+         return res.status(500).json({msg:"Internal server Error"});
+     }
+
+    // checking for already present email...
+    try{
+       const user= await User.findOne({email});
+       if(user){
+        return res.status(500).json({msg:"Mail has already Registered"});
+       }
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({msg:"Internal server Error"});
+    }
+
     let hashedPassword=await hashPassword(password);
 
     // new doc for saving otp..
@@ -50,17 +65,17 @@ export const SignUpInitazation= async (req,res)=>{
 
     // saving Otp in db..
     try{
-        await Otp.saveOtp(email,OTP);
+        await Otp.saveOtp(email,OTP,"Sign-In");
     }
     catch(err){
-        return res.status(500).json({msg:err});
+        return res.status(500).json({msg:err.message});
     }
     console.log(hashedPassword);
     // creating the JWT....
-    const otpToken=jwt.sign({email,password:hashedPassword,name},process.env.OTP_SECRET,{expiresIn:"5m"});
+    const otpToken=jwt.sign({email,password:hashedPassword,name,id,purpose:"Sign-In"},process.env.OTP_SECRET,{expiresIn:"5m"});
 
     // // sending the mail to the user.....
-    const response_code_mail=await sendMail(email,OTP);
+    const response_code_mail=await sendMail(email,OTP,"Sign-In");
     
     // console.log(response_code_mail);
     // console.log(otpToken);
@@ -75,7 +90,7 @@ export const SignUpInitazation= async (req,res)=>{
              
         });
         
-        return res.status(200).json({msg:"Otp sent"});
+        return res.status(200).json({msg:"Otp has been sent successfully."});
     }
 
     return res.status(500).json({msg:"Error in sending Mail"});
@@ -91,29 +106,40 @@ export const VerifyOtp=async(req,res)=>{
 
     // checking the token...
     const otpToken=req.cookies.otpToken;
-    // console.log(otpToken);
+    console.log(otpToken);
     let name;
     let email;
     let password;
+    let id;
+    let purpose;
+
+    if(!otpToken){
+        return res.status(401).json({msg:'Not Authorized.'});
+    }
 
     jwt.verify(otpToken,process.env.OTP_SECRET,(err,data)=>{
-        if(err){return res.status(401).json({msg:'Incorrect Token.'});
+        if(err){
+            console.log("incorrect Token")
+            return res.status(401).json({msg:'Incorrect Token.'});
         }
         console.log(data);
         name=data.name;
         email=data.email;
         password=data.password;
+        id=data.id;
+        purpose=data.purpose;
     });
 
+    console.log('after verifyinggg...')
     // check correct otp ...
     try{
     await Otp.verifyOtp(email,otp)
     }
     catch(err){
-        console.log(err);
-        return res.status(401).json({msg:err});
+        // console.log(err);
+        return res.status(401).json({msg:"Incorrect Otp /Expiredd Otp"});
     }
-
+ 
     // deletOtp once verifyed...
     try{
         await Otp.deleteOne({email});
@@ -122,23 +148,40 @@ export const VerifyOtp=async(req,res)=>{
             return res.status(401).json({msg:"can't Delete from DB"});
     }
 
+    console.log("deleted....");
+
+    if(purpose=="Sign-In"){
     // save credentials...
-    try{
-      const SignUpToken=await User.saveUser(name,email,password);
-      res.cookie('SignUpToken', SignUpToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 5 * 60 * 1000, // 5 minutes
-        sameSite: 'none',
-    });
-    
-    return res.status(200).json({msg:"User Saved Successfully"});
+        try{
+        const {SignAccessToken,SignRefreshToken}=await User.saveUser(name,email,password,id);
+        res.cookie('refreshToken', SignRefreshToken, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 5 * 60 * 1000, // 5 minutes
+            sameSite: 'none',
+        });
+        
+        return res.status(200).json({msg:"User Saved Successfully",accessToken:SignAccessToken});
+        }
+        catch(err){
+            console.error(err)
+            return res.status(500).json({msg:err.message});
+        }
     }
-    catch(err){
-        console.error(err)
-        return res.status(500).json({msg:err});
+    else if(purpose=="ChangePassword"){
+       const changePassToken=jwt.sign({email},process.env.PASS_SECRET,{expiresIn:"5m"});
+       res.cookie(
+        "PassToken",changePassToken,
+            { httpOnly: true,
+                    secure: true,
+                    maxAge: 5 * 60 * 1000, 
+                    sameSite: 'none',
+            }
+       )
+        return res.status(200).json({msg:"Password can be Changed",pass:true});
     }
 
+    return res.status(500).json({msg:"Internal server Error"});
     // return jwt...
 }
 
@@ -148,9 +191,10 @@ export const ResendOtp=async(req,res)=>{
     console.log(otpToken);
 
      
-     let name;
+    let name;
     let email;
     let password;
+    let purpose;
 
     jwt.verify(otpToken,process.env.OTP_SECRET,(err,data)=>{
         if(err){return res.status(401).json({msg:'Incorrect Token.'});
@@ -159,6 +203,7 @@ export const ResendOtp=async(req,res)=>{
         name=data.name;
         email=data.email;
         password=data.password;
+        purpose=data.purpose;
     });
 
     console.log(email,name);
@@ -176,23 +221,23 @@ export const ResendOtp=async(req,res)=>{
     }
     // saving Otp in db..
     try{
-        await Otp.saveOtp(email,OTP);
+        await Otp.saveOtp(email,OTP,purpose);
     }
     catch(err){
-        return res.status(500).json({msg:err});
+        return res.status(500).json({msg:err.message});
     }
   
     // creating the JWT....
     // const otpToken=jwt.sign({email,password,name},process.env.OTP_SECRET,{expiresIn:"5m"});
 
     // // sending the mail to the user.....
-    const response_code_mail=await sendMail(email,OTP);
+    const response_code_mail=await sendMail(email,OTP,purpose);
     
     // console.log(response_code_mail);
     // console.log(otpToken);
 
     if(response_code_mail==200){
-        return res.status(200).json({msg:"Otp sent"});
+        return res.status(200).json({msg:"Otp has been sent successfully"});
     }
 
     return res.status(500).json({msg:"Error in sending Mail"});
