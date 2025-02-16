@@ -35,9 +35,10 @@ export const SignUpInitazation= async (req,res)=>{
 
     // chcking for the user-d's uniqueness...
     try{
-        const user= await User.findOne({id});
+        const user= await User.findOne({user_id:id});
+        
         if(user){
-         return res.status(500).json({msg:"UserId has already taken."});
+         return res.status(500).json({msg:"UserId has been already taken."});
         }
      }
      catch(err){
@@ -49,11 +50,13 @@ export const SignUpInitazation= async (req,res)=>{
     try{
        const user= await User.findOne({email});
        if(user){
-        return res.status(500).json({msg:"Mail has already Registered"});
+        // req.clearCookie('otpToken');
+        return res.status(500).json({msg:"Mail has been already Registered"});
        }
     }
     catch(err){
         console.log(err);
+        // req.clearCookie('otpToken');
         return res.status(500).json({msg:"Internal server Error"});
     }
 
@@ -153,15 +156,24 @@ export const VerifyOtp=async(req,res)=>{
     if(purpose=="Sign-In"){
     // save credentials...
         try{
+        console.log(name,email,password,id);
         const {SignAccessToken,SignRefreshToken}=await User.saveUser(name,email,password,id);
+        console.log(name,email,password,id);
         res.cookie('refreshToken', SignRefreshToken, {
             httpOnly: true,
             secure: true,
-            maxAge: 5 * 60 * 1000, // 5 minutes
+            maxAge: 60 * 60 * 1000 *1000, // 10 days
+            sameSite: 'none',
+        });
+
+// clearing the otp token......
+        res.clearCookie('otpToken', {
+            httpOnly: true,
+            secure: true,
             sameSite: 'none',
         });
         
-        return res.status(200).json({msg:"User Saved Successfully",accessToken:SignAccessToken});
+        return res.status(200).json({msg:"User Saved Successfully",accessToken:SignAccessToken,data:{name,email,id} });
         }
         catch(err){
             console.error(err)
@@ -189,7 +201,9 @@ export const ResendOtp=async(req,res)=>{
     // checking the token...
     const otpToken=req.cookies.otpToken;
     console.log(otpToken);
-
+    if(!otpToken){
+        return res.status(401).json({msg:'Not Authorized.'});
+    }
      
     let name;
     let email;
@@ -239,6 +253,7 @@ export const ResendOtp=async(req,res)=>{
     if(response_code_mail==200){
         return res.status(200).json({msg:"Otp has been sent successfully"});
     }
+
 
     return res.status(500).json({msg:"Error in sending Mail"});
 }

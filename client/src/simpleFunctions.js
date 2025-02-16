@@ -1,5 +1,7 @@
 import axios from "axios"
-import { use } from "react";
+
+import toast from "react-hot-toast";
+import { setUser,setUserAuth } from "./Store/AuthUser";
 const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 
 import { useSelector } from "react-redux";
@@ -16,4 +18,30 @@ export const PreAuth=async (purpose)=>{
         return 500;
     }
 };
+
+export const makeToast=(str,code)=>{
+    if(code==200){
+        toast.success(str, {
+            duration: 3000,
+            position: 'top-right',
+            
+              style: {
+              color: '#fff',
+              backgroundColor:'rgba(39, 50, 73, 0.934)',
+              },
+            });
+        return;
+    }
+
+    toast.error(str, {
+        duration: 3000,
+        position: 'top-right',
+        
+          style: {
+          color: '#fff',
+          backgroundColor:'rgba(39, 50, 73, 0.934)',
+          },
+        });
+};
+
 

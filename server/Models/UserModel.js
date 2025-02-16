@@ -2,18 +2,19 @@ import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import 'dotenv/config'
 import bcrypt from 'bcrypt';
+
 import { generateAccessToken,generateRefreshToken } from "../Controllers/refreshTokController.js";
 const UserSchema=new Schema({
     name:{
         type: String,
         required: true,
-        minlength: 2,  
+        minlength: 1,  
         trim: true,
     },
     email:{
         type: String,
         required: true,
-        unique: true, 
+        // unique: true, 
         lowercase: true,  
         trim: true, 
 
@@ -21,25 +22,25 @@ const UserSchema=new Schema({
     user_id:{
         type: String,
         required: true,
-        unique: true, 
+        // unique: true, 
         lowercase: true,  
         trim: true, 
-
     },
     password:{
         type: String,
         required: true,
         minlength:6
     },
+    contacts:[{name:{type:String,trim:true,lowercase:true,},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
+    notifications:[{type:String,trim:true,lowercase:true,}],
 },
 {
 timestamps:true,
 });
 
 
-
-
 UserSchema.statics.saveUser=async function (name,email,password,id) {
+    console.log(name,email,password,id);
     const user=new this (
         {
             name,
@@ -50,6 +51,7 @@ UserSchema.statics.saveUser=async function (name,email,password,id) {
     );
 
     try{
+        console.log(user);
        const savedUser = await user.save();
        console.log(savedUser);
         const SignRefreshToken=generateRefreshToken({email,name,id});

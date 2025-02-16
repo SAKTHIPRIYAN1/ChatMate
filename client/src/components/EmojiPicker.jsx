@@ -428,7 +428,7 @@ const EmojiRow=({row,func,val})=>{
             {
                 row.map((el,ind)=>{
                     return (
-                        <div className="hover:cursor-pointer hover:bg-white/20 active:scale-90 h-9 w-8  flex justify-center items-center rounded-xl">
+                        <div className="hover:cursor-pointer hover:bg-white/20 active:scale-90 h-9 w-8  flex justify-center items-center rounded-xl" key={ind}>
                             <h2 onClick={handleCLick} className=" p-0 m-0">{el.em}</h2>
                         </div>
                     )

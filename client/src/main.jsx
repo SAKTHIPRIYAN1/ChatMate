@@ -11,14 +11,14 @@ import { Toaster,toast } from "react-hot-toast";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+    <LoadingProvider>
         <Provider store={store}>
-          <LoadingProvider>
             <SocketProvider >
                 <Toaster />
               <App />
             </SocketProvider>
-          </LoadingProvider>
         </Provider>
+      </LoadingProvider>
     </BrowserRouter>
   </StrictMode>
 

@@ -14,6 +14,8 @@ import { setUser } from "../Store/AuthUser";
 import api from "../CustomHooks/apiInstance";
 
 import { useLoading } from "./Loadingcontext";
+import { useNavigate } from "react-router-dom";
+import { getUserData } from "../Store/AuthUser";
 const LoginPage=()=>{
     return(
         <div className=" fullas transition-all  flex justify-center">
@@ -45,7 +47,7 @@ const LoginPart=()=>{
     const [pass,setpass]=useState("");
 
     const {loading,setLoading}=useLoading();
-
+    const navigate=useNavigate();
     const dispatch=useDispatch();
     const hangleSubmit=async (e)=>{
         e.preventDefault();
@@ -59,10 +61,13 @@ const LoginPart=()=>{
             const userData=res.data.data;
             userData["accessToken"]=res.data.accessToken;
             dispatch(setUser(userData));
+            dispatch(getUserData());
             setLoading(false);
             console.log("Logged In...");
+            
             setId("");
             setpass("");  
+            navigate("/");
         }
         catch(err){
             setLoading(false);
@@ -83,8 +88,6 @@ const LoginPart=()=>{
             }
         }
     }
-
-  
 
 
     return(

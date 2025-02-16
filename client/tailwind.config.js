@@ -20,6 +20,7 @@ export default {
         wiggle: 'wiggle 1s ease-in-out infinite',
         slideRight: 'slideRight 0.5s  ease-out',
         slideLeft: 'slideRight 0.5s  ease-out forwards',
+        'scale-up': 'scale-up 0.5s ease-out forwards',
       },
       keyframes:{
         wiggle: {
@@ -35,7 +36,11 @@ export default {
           '100%': { transform: 'translateX(-100%)',
                     dispaly:'hidden'
                   },
-        }
+        },
+        'scale-up': {
+          '0%': { transform: 'scale(0)', opacity: 0 },
+          '100%': { transform: 'scale(1)', opacity: 1 },
+        },
       }
     },
   },

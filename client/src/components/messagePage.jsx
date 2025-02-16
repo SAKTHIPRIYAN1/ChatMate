@@ -87,7 +87,7 @@ const MessagePart=()=>{
    
 }
 
-const MessComp=()=>{
+export const MessComp=()=>{
     const {loading}=useLoading();
     if(loading){
         console.log("loadingggg....");
@@ -99,10 +99,11 @@ const MessComp=()=>{
             <ConcatDescrip  />
             <MessContain />
         </div>
+        
     )
 }
 
-const MessContain=()=>{
+export const MessContain=()=>{
     const ChatPerson=useSelector((store)=>store.AnnRecip.recipName);
     const mainRef=useRef(null);
     const [ScrollToBottom,setScrollBotttom]=useState(false);
@@ -128,7 +129,7 @@ const MessContain=()=>{
 
 
 
-const MessHead=({ChatPerson})=>{
+export const MessHead=({ChatPerson,noTimer})=>{
 
     const navigate=useNavigate();
     const {setLoading}=useLoading();
@@ -164,24 +165,14 @@ const MessHead=({ChatPerson})=>{
                     {ChatPerson}
                 </h1>
            </div>
-           {/* <div className="h-full hidden sm:flex items-center min-w-[100px] gap-3 justify-between">
-                <button className="button px-5 w-auto bg-sender rounded-full">
-                    save
-                </button>
-
-                <button className="button px-5 w-auto rounded-full bg-teal-950/90" onClick={handleNext}>
-                    next
-                </button>
-           </div> */}
-
-           <div className="">
-                <ChatTimer /> 
-           </div>
+            {
+                noTimer || <ChatTimer /> 
+            }
         </div>
     )
 }
 
-const TyperDiv = ({scrollfunc}) => {
+ const TyperDiv = ({scrollfunc}) => {
 
     // forsocket....
     const {socket}=useSocket();
@@ -207,7 +198,7 @@ const TyperDiv = ({scrollfunc}) => {
         }
     };
 
-    const handleSend=()=>{
+  const handleSend=()=>{
         if(message.length<=0)
             return;
 
@@ -316,7 +307,7 @@ const TyperDiv = ({scrollfunc}) => {
 };
 
 
-const EmojiPicker=({pbt,func,val})=>{
+export const EmojiPicker=({pbt,func,val})=>{
     const pickerRef=useRef(null);
 
 

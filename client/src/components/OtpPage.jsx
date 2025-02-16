@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { PreAuth } from "../simpleFunctions";
 
 
+import { useSelector,useDispatch } from "react-redux";
+import { setUser } from "../Store/AuthUser";
+
 const OtpPage = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputRefs = useRef([]);
@@ -49,6 +52,7 @@ const OtpPage = () => {
 
   const navigate=useNavigate();
 
+  const dispatch=useDispatch();
 
   useLayoutEffect(() => {
     const stat = async () => {
@@ -94,14 +98,26 @@ const OtpPage = () => {
                 });
               navigate("/changePass",{ state: { isConfirmPass: true }})
             }
-
-            
+            else{
+            const userData=res.data.data;
+            userData["accessToken"]=res.data.accessToken;
+            dispatch(setUser(userData));
+            toast.success("Sign Up Success", {
+              duration: 3000,
+              position: 'top-right',
+                style: {
+                color: '#fff',
+                backgroundColor:'rgba(39, 50, 73, 0.934)',
+                },
+              });
+            navigate("/");
+            }
         }
         catch(err){
         setLoading(false);
         
           if(err){
-
+              
             toast.error(err.response.data.msg, {
               duration: 3000,
               position: 'top-right',

@@ -6,6 +6,8 @@ const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
 });
 
+
+
 const SuccessCode=200;
 const FailureCode=500;
 
@@ -54,6 +56,9 @@ function hasPairedBefore(userId, partnerId) {
     // Check if partnerId exists in the history
     return userHistory[userId].some(entry => entry.partnerId == partnerId);
 }
+
+// Auth Socket...
+let AuthSocket={};
 
 
 class AnonymousChatting{
@@ -302,8 +307,12 @@ const socketSetup=(AppServer)=>{
     let cls=new AnonymousChatting();
 
     io.on("connection",(socket)=>{
+
+        // for anonymous Chat.......
         cls.io=io;
         console.log("a user connected");
+       
+
         socket.on("newRegister",({name,interest,pass,UserId})=>{
             console.log("from ",name,":",interest);
 
@@ -356,16 +365,38 @@ const socketSetup=(AppServer)=>{
                 io.to(receiverId).emit('receiveFile',{filePath,name});
         });
 
+        // for in-persion Chatting..
+        socket.on('sendFileChat', ({filePath,name,Auth}) => {
+            const receiverId=AuthSocket[Auth];
+            console.log(name,' sent from sender to server:', filePath);
+            io.to(receiverId).emit('receiveFileChat',{filePath,name});
+    });
 
         socket.on('disconnect',()=>{
             DisconnectAction(cls,socket.id);
         });
+
+        //  adding th socket with the Auth .
+        socket.on("chat",({Auth})=>{
+            AuthSocket[Auth]=socket.id
+            console.log("User tring To chat:",AuthSocket);
+        })
+
     });
+
+
+
 
 }
 
 export const getIo=()=>{
     return io;
 }
+
+export const getSocket=(Auth)=>{
+    console.log(AuthSocket,Auth)
+    return AuthSocket[Auth];
+}
+
 
 export default socketSetup;

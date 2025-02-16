@@ -10,19 +10,25 @@ import { addNewAnnonMess } from './Store/AnnonymousMessages';
 import { clearAnnonMess } from './Store/AnnonymousMessages';
 import { ClearAnnonRecip } from './Store/AnonymousUser';
 import store from './Store/store';
+import axios from 'axios';
+import { setUser,setUserAuth } from './Store/AuthUser';
 
 import toast from 'react-hot-toast';
+import { setMessages } from './Store/ContactSlice';
 
 const apiUrl = import.meta.env.VITE_BACKURL;
 export const SocketProvider = ({ children }) => {
     const dispatch=useDispatch();
-
     const [socket, setSocket] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
+    // Auth...
+    const {Auth}=useSelector((store)=>store.User);
+
 
     useEffect(() => {
-        // Connect to the socket only if it hasn't been initialized yet
+
+         // Connect to the socket only if it hasn't been initialized yet
         
         if (!socket) {
             console.log("try to connn");
@@ -39,6 +45,7 @@ export const SocketProvider = ({ children }) => {
                 console.log("Connection Error : websocket failed to connect check your server");
             });
 
+                
 
             // for receiving normal message....
             newSocket.on("ReceiveMessage",(message)=>{
@@ -58,29 +65,24 @@ export const SocketProvider = ({ children }) => {
             newSocket.on("saveReq",({sender,sendAuth})=>{
                 console.log("Save request came from",sender);
 
-                toast((t) => (
-                    <span className="flex items-center gap-2 bg-sender">
-                      Save Request from <b className='font-bold text-teal-400 '>{sender}</b>
-                      <button
-                        className="ml-2 px-2 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
-                        onClick={() => toast.dismiss(t.id)}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        className="ml-2 px-2 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
-                        onClick={() => toast.dismiss(t.id)}
-                      >
-                       Decline
-                      </button>
-                    </span>
+                toast.custom((t) => (
+                    <div className="flex  items-center  p-2 sm:text-[15px] md:text-[18px]  backdrop-blur-lg  bg-slate-800/80 rounded-md">
+                            <span className="flex items-center p-2 ">        
+                                Save Request from <b className=' ml-[4px] font-bold text-teal-400 '>{" "+sender}</b>
+                            </span>
+                            <div className="flex h-full border-l-2  border-l-slate-400/50 items-center  p-2 ">
+                            <button className='font-extrabold' onClick={() => toast.dismiss(t.id)}>
+                                    Close
+                            </button>
+                            </div>
+                    </div>
                   ), {
                     position: "top-right", // Move toast to the top-right corner
-                    duration: 3000, // Toast will disappear after 4 seconds
+                    duration: 1000, // Toast will disappear after 4 seconds
                   });
             })
 
-            // for receiving file....
+            // for receiving file in chattt....
             newSocket.on('receiveFile', ({ filePath, name }) => {
                     console.log("file received...",filePath,name)
                     dispatch(addNewAnnonMess(
@@ -93,6 +95,33 @@ export const SocketProvider = ({ children }) => {
                         }
                     ))
             });
+
+
+            // for receiving it in the Chat..
+            newSocket.on('receiveFileChat', ({ filePath, name }) => {
+                console.log("file received...",filePath,name)
+                dispatch(setMessages(
+                    {
+                        isYou:false,
+                        mess:'file1',
+                        isFile:true,
+                        path:filePath,
+                        filename:name
+                    }
+                ))
+        });
+
+
+
+
+
+            // for getting chat MEssages...
+
+            newSocket.on("ChatMessage",({sender,receiver,chatId,message})=>{
+                console.log(sender,receiver,chatId,message);
+                dispatch(setMessages({isYou:sender==Auth,mess:message,isFile:false}));
+
+            })
 
               
     

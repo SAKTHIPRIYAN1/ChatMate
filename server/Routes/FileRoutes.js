@@ -19,7 +19,7 @@ const fileRoute=express.Router();
 
 // for uploading filesss in upload folder...
 fileRoute.post("/Annon",upload.single('file'),fileControllers.FileRecv);
-
+fileRoute.post("/Chat",upload.single('file'),fileControllers.ChatFileRecv);
 
 
 export default {fileRoute};

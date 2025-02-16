@@ -1,16 +1,31 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch,useSelector } from "react-redux";
-
-
 // import MessageContainer.....
 import MessageContainer from "./messageContainer";
+import { GetContactMessages } from '../Store/ContactSlice';
+import { useSocket } from '../SocketContext';
 
+export const MainChat=({reff,ChatPerson})=>{
+    const dispatch=useDispatch();
 
+    const AnnonMessages=useSelector((store)=>store.AnnonMess.messages); 
+    const ContactMessages=useSelector((store)=>store.Contact.Messages);
+    const Auth=useSelector((store)=>store.User.Auth);
 
-const MainChat=({reff,ChatPerson})=>{
-    const Messages=useSelector((store)=>store.AnnonMess.messages); 
-    console.log(Messages);
+    const Messages= ContactMessages ? ContactMessages : AnnonMessages ;
+    const id=useSelector((store)=>store.User.id);
+    const isLoggedIn=Auth==id;
+    const {socket}=useSocket();
+
+    
+
+    useEffect(()=>{
+        dispatch(GetContactMessages());
+        console.log("kk")
+        socket.emit("chat",{Auth});
+        // preProcess the Messages......
+    },[])
     
     return(
         <section ref={reff} className="w-full h-full   pb-[93px] overflow-y-scroll ">

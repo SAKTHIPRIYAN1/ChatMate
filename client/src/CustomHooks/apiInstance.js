@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
+const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 import store from '../Store/store';
 
 const api = axios.create({
@@ -17,7 +18,7 @@ api.interceptors.response.use(
 
       try {
         // Get a new access token
-        const { data } = await axios.post('/refresh-token', {accessToken}, { withCredentials: true });
+        const { data } = await axios.post(VITE_BACKURL+'/refresh-token', {accessToken}, { withCredentials: true });
 
         // Update token in headers
         api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;

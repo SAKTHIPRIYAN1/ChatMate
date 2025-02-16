@@ -165,7 +165,7 @@ const TheirMessContainer = ({ Mess,Main }) => {
     return (
       <div className="flex items-center justify-start p-[3px] group  w-full h-auto cursor-pointer " ref={messageRef} >
       <div className="bg-sender p-2 rounded-md flex flex-col max-w-[55%] relative pr-16  sm:max-w-[75%]">
-      <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>{setOptions(!Options)}} > 
+      <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>{setOptions(!Options)}                           } > 
         <MenuDownIcon />
         </div>
 

@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import sendMail from "./mailcontroller.js";
 
 import bcrypt from 'bcrypt';
+
 import { hashPassword } from "./SignUpControllers.js";
 
 const LoginHandler=async (req,res)=>{
@@ -15,7 +16,7 @@ const LoginHandler=async (req,res)=>{
         res.cookie('refreshToken', SignRefreshToken, {
             httpOnly: true,
             secure: true,
-            maxAge: 5 * 60 * 1000, // 5 minutes
+            maxAge: 60 * 60 * 1000 *1000, // 10 days
             sameSite: 'none',
         });
         
@@ -106,7 +107,19 @@ export const ConfirmPassword= async (req,res)=>{
         let hashedPassword= await hashPassword(password);
 
         await user.updateOne({email},{$set:{password:hashedPassword}});
+        // clearing the otp token......
+        res.clearCookie('otpToken', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
 
+        // clearing up the pass Token....
+        res.clearCookie('PassToken', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
         return res.status(200).json({msg:"PassWord Updated Successfully."});
 
     }catch(err){

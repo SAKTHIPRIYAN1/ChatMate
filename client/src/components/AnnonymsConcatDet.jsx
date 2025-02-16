@@ -42,23 +42,17 @@ const AnnonChatDet=()=>{
 
     return(
         <>
-        <div className="h-full w-full border-x-[1px]   border-x-slate-950  sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm  transparent_tone">
-                    {/* <SearchBar /> */}
-                    <AnnonDes  />
-        </div>  
+            <div className="h-full w-full border-x-[1px]   border-x-slate-950  sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm  transparent_tone">
+                        <AnnonDes  />
+            </div>  
         </>
                 
 
     )
 }
 
-const SearchBar=()=>{
-    return(
-        <div className="w-auto bg-slate-600/80 rounded-full h-10 mx-4 my-1">
-            <input type="text" placeholder="Search" name="search" id="srch" className="h-full p-4  w-[95%] bg-transparent outline-none" />
-        </div>
-    )
-};
+
+
 
 const AnnonDes=()=>{
 
@@ -92,7 +86,7 @@ const AnnonDes=()=>{
     // If not there ,, create a new pass
 
         const isLoggedin=useSelector((store)=>store.User.isLoggedin);
-        const sendPass=RandomPass.GenerateRandomPass();
+        const sendPass=useSelector((store)=>store.User.AnnonPass);
         const sendId=useSelector((store)=>store.User.id);
 
         const recipPass=useSelector((store)=>store.AnnRecip.recipPass);
@@ -102,22 +96,21 @@ const AnnonDes=()=>{
         const recvName=useSelector((store)=>store.AnnRecip.recipName);
 
         const recipSock=useSelector((store)=>store.AnnRecip.recipSock);
+
+
     const handleSave=async ()=>{
         let annonymous=[];
         const recvAuth=recipId?recipId:recipPass;
         const sendAuth=isLoggedin?sendId:sendPass;
         
-
         // console.log(sendAuth,recipAuth,sendName,recvName);
 
         if(!isLoggedin){
             annonymous.push("sender");
         }
-
         if(!recipId){
             annonymous.push("receiver");
         }
-
 
         try{
             const res=await axios.post(VITE_BACKURL+"/saveUser",{sender:sendName,receiver:recvName,sendAuth,recvAuth,annonymous,recipSock},{withCredentials:true});

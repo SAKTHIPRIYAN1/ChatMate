@@ -22,6 +22,7 @@ import { useSocket } from "../SocketContext";
 // RandomPass For auth....
 import RandomPass from "../CustomHooks/RandomPass";
 import toast from "react-hot-toast";
+import store from "../Store/store";
 
 const apiUrl = import.meta.env.VITE_BACKURL
 
@@ -68,7 +69,7 @@ const RegisterPart=()=>{
     // interest from the store....
     const [activePreferences,setactive]=useState(new Set(useSelector((store)=>store.UserReg.interest)));
     const [name,setName]=useState(useSelector((store)=>store.UserReg.name));
-    
+    const RandomPassKey = useSelector((store)=>store.User.AnnonPass);
     
     // console.log(name);
     // let activePreferences=new Set(useSelector((store)=>store.UserReg.interest))
@@ -152,9 +153,8 @@ const RegisterPart=()=>{
             console.log("Socket connected");
         });
 
-       let RandomPassKey = RandomPass.GenerateRandomPass(name);
-
-
+       
+       console.log(RandomPassKey)
         e.preventDefault();
         
         try {

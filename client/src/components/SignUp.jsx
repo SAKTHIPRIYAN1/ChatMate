@@ -97,7 +97,7 @@ const SignForm=()=>{
                           },
                         });
                 }
-                console.log(err);
+                // console.log(err);
                 // setErr("An Error Occured...");
             }
         }

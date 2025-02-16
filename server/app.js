@@ -19,16 +19,21 @@ import { refreshTokenHandler } from "./Controllers/refreshTokController.js";
 
 import loginRoute from "./Routes/loginRoute.js";
 import requestRoute from "./Routes/requestRoute.js";
+import rr from "./Routes/RequestActionsRoute.js";
+import ContactRoute from "./Routes/ContactRoute.js";
+import MessageRouter from "./Routes/MessageRoute.js";
 
 import { changePasswordRequest,ConfirmPassword } from "./Controllers/LoginController.js";
 
 import PreAuthRoute from "./SimpleRoutes.js";
+import RandomRoute from "./Routes/RandomPassRoute.js";
 // for refresh Token ......
 
-const SignUpRoute=SignUpRoutes.SignUpRoute;
 
 // og routess..
+const SignUpRoute=SignUpRoutes.SignUpRoute;
 const fileRoute=frt.fileRoute;
+const ReqActionRoute=rr.ReqActionRoute
 
 const whitelist = ['http://localhost:5173'];
 
@@ -73,13 +78,21 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/saveUser',requestRoute);
+
+
+// routers....
 // connecting the routes with the router....
+app.use('/request',ReqActionRoute);
 app.post('/refresh-token',refreshTokenHandler);
 app.use('/file',fileRoute);
 app.use('/signUp',SignUpRoute);
 app.use('/login',loginRoute);
 app.use('/preauth',PreAuthRoute);
+app.use('/saveUser',requestRoute);
+app.use('/contact',ContactRoute);
+app.use('/Message',MessageRouter);
+app.use("/getRandomPass",RandomRoute);
+
 
 
 // fileDownload route for messaing.........
@@ -109,12 +122,14 @@ app.get('/uploads/:filename', (req, res) => {
 
 app.post("/changePassword",changePasswordRequest);
 app.post("/confirmPassword",ConfirmPassword);
- 
+
 
 
 let AppServer=app.listen(3000,()=>{
     console.log("app is litsening...")
 });
 
+
+// for socket connection...
 socketSetup(AppServer);
 
