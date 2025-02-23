@@ -7,23 +7,26 @@ import sendMail from "./mailcontroller.js";
 import bcrypt from 'bcrypt';
 
 import { hashPassword } from "./SignUpControllers.js";
+import MergeController from "./DataMergeController.js";
 
 const LoginHandler=async (req,res)=>{
-    const {id,password}=req.body;
+    const {id,password,Auth}=req.body;
 
     try{
         const {SignAccessToken,SignRefreshToken,data}=await User.login({id,password});
+        await MergeController(Auth,id);
         res.cookie('refreshToken', SignRefreshToken, {
             httpOnly: true,
             secure: true,
             maxAge: 60 * 60 * 1000 *1000, // 10 days
             sameSite: 'none',
         });
+
         
         return res.status(200).json({msg:"User Logged In Successfully",accessToken:SignAccessToken,data});
     }
     catch(err){
-        // console.log("error",err);    
+        console.log("error",err);    
         return res.status(401).json({msg:err.message});
     }
 };

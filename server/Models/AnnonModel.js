@@ -9,7 +9,7 @@ const AnnonUserSchema=new mongoose.Schema({
             lowercase: true,  
             trim: true, 
         },
-        contacts:[{name:{type:String,trim:true,lowercase:true,},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
+        contacts:[{name:{type:String,trim:true,lowercase:true,},profile:{type:String,unique:true,trim:true},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
         notifications:[{type:String,trim:true,lowercase:true,}],
 });
 

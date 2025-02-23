@@ -19,6 +19,8 @@ export const PreAuth=async (purpose)=>{
     }
 };
 
+
+
 export const makeToast=(str,code)=>{
     if(code==200){
         toast.success(str, {
@@ -43,5 +45,3 @@ export const makeToast=(str,code)=>{
           },
         });
 };
-
-

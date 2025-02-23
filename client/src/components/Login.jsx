@@ -11,6 +11,8 @@ const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 import { useDispatch } from "react-redux";
 import { setUser } from "../Store/AuthUser";
 
+import { useSelector } from "react-redux";
+
 import api from "../CustomHooks/apiInstance";
 
 import { useLoading } from "./Loadingcontext";
@@ -49,12 +51,15 @@ const LoginPart=()=>{
     const {loading,setLoading}=useLoading();
     const navigate=useNavigate();
     const dispatch=useDispatch();
+
+    const Auth =useSelector((store)=>store.User.Auth);
+
     const hangleSubmit=async (e)=>{
         e.preventDefault();
         console.log(id,pass);
         try{
             setLoading(true);
-            const res=await axios.post(VITE_BACKURL+"/login",{id,password:pass},{
+            const res=await axios.post(VITE_BACKURL+"/login",{id,password:pass,Auth},{
                 withCredentials: true,
             });
             console.log(res);

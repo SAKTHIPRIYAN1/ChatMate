@@ -9,6 +9,7 @@ import sendMail from './mailcontroller.js';
 import Otp from '../Models/otpModel.js';
 import User from '../Models/UserModel.js';
 
+import MergeController from './DataMergeController.js';
 import 'dotenv/config'
 // first make the jwt for storing  pass and user name..
 // send to client..
@@ -18,6 +19,8 @@ export const hashPassword=async (password)=>{
     let hashedPassword=await bcrypt.hash(password,saltround);
     return hashedPassword;
 }
+
+
 
 const ListTostring=(otp)=>{
     let str="";
@@ -102,7 +105,7 @@ export const SignUpInitazation= async (req,res)=>{
 // for verifying Otp......
 export const VerifyOtp=async(req,res)=>{
 
-    let {otp}=req.body;
+    let {otp,Auth}=req.body;
     otp=JSON.parse(otp);
     otp=ListTostring(otp);
     console.log(otp);
@@ -159,6 +162,9 @@ export const VerifyOtp=async(req,res)=>{
         console.log(name,email,password,id);
         const {SignAccessToken,SignRefreshToken}=await User.saveUser(name,email,password,id);
         console.log(name,email,password,id);
+        
+        await MergeController(Auth,id);   
+
         res.cookie('refreshToken', SignRefreshToken, {
             httpOnly: true,
             secure: true,

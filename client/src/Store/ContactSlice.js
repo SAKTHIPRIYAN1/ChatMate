@@ -9,6 +9,7 @@ const initialState={
     Auth:null,
     chatId:null,
     load:false,
+    profilePic:null,
     Messages:[],
 };
 
@@ -57,6 +58,7 @@ const ContactSlice= createSlice(
             state.name=action.payload.name;
             state.Auth=action.payload.Auth;
             state.chatId=action.payload.chatId;
+            state.profilePic=action.payload.profile;
         },
         setMessages:(state,action)=>{
             state.Messages.push(action.payload);

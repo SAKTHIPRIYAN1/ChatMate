@@ -20,9 +20,12 @@ import axios from "axios";
 const apiUrl = import.meta.env.VITE_BACKURL;
 import { getUserData } from "./Store/AuthUser";
 import Load from "./components/Loader";
+
+import ProfileComponent from "./components/profile";
 const App=()=>{
   const dispatch = useDispatch();
   const { load } = useSelector((state) => state.User);
+  const {isLoggedin}=useSelector((store)=>store.User)
 
 // To do...
 // alter api instance...
@@ -30,9 +33,15 @@ const App=()=>{
 // make the contact work temporary Auth....
 // create temporray User Collection to store the AnnonyMous Auth Data...
 
-  useEffect(() => {
-    dispatch(getUserData());
-  }, []);
+useEffect(() => {
+  console.log("kk");
+  dispatch(getUserData())
+    .unwrap()
+    .catch(() => {
+      dispatch(generateAuthAsync());
+    });
+}, [dispatch,isLoggedin]);
+
 
   if (load) return <Load />;
 
@@ -43,6 +52,7 @@ const App=()=>{
         <Route index element={<ContactComponent />} />
         <Route path="/requests" element={<RequestComponent />} />
         <Route path="contacts" element={<ContactComponent />} />
+        <Route path="profile" element={<ProfileComponent />} />
       </Route>
 
       <Route path="/login" element={<LoginPage />} />

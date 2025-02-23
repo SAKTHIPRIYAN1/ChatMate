@@ -10,8 +10,9 @@ export const SearchBar=()=>{
 import { useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
-
+import svg from "../assets/imag.png"
 const VITE_BACKURL =import.meta.env.VITE_BACKURL;
+const VITE_IMAGE_BACKURL =import.meta.env.VITE_IMAGE_BACKURL;
 import Load from "./Loader";
 import { useLoading } from "./Loadingcontext";
 import { useState } from "react";
@@ -70,8 +71,10 @@ const ContactComponent=()=>{
 };
 
 const Contact=({el})=>{
-    const dispatch=useDispatch();
+    
+    console.log(el);
 
+    const dispatch=useDispatch();
 
     const timeDate=(timestamp)=>{
         const date = new Date(timestamp);
@@ -94,7 +97,8 @@ const Contact=({el})=>{
     return (
        <div className=" hover:cursor-pointer hover:bg-slate-700/30 h-max max-h-[100px] border-b-[1px] border-b-slate-700 py-[15px]    flex gap-2 pr-0 pl-0 " onClick={handelContactClick}>
         <div className="ml-3 flex h-max gap-2 items-center self-center  w-full"> 
-            <div className="h-14 w-14 rounded-full bg-white">
+            <div className="h-14 w-14 rounded-full border-[1px] border-slate-500 ">
+              <img src={el.profile? VITE_IMAGE_BACKURL+"/"+el.profile : svg } alt="ll" />
             </div>
             <div className="flex flex-col h-full  justify-center">
                 <h1 className="font-bold text-white text-lg">{el.name}</h1>

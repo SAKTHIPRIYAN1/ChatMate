@@ -19,13 +19,15 @@ export const MainChat=({reff,ChatPerson})=>{
     const {socket}=useSocket();
 
     
-
+    // contactAuth..
+    const contactAuth=useSelector((store)=>store.Contact.Auth)
     useEffect(()=>{
         dispatch(GetContactMessages());
         console.log("kk")
         socket.emit("chat",{Auth});
+        console.log("ll");
         // preProcess the Messages......
-    },[])
+    },[dispatch,contactAuth])
     
     return(
         <section ref={reff} className="w-full h-full   pb-[93px] overflow-y-scroll ">

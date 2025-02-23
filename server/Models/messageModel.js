@@ -10,11 +10,13 @@ const MessageSchema = new mongoose.Schema({
   },
   sender: {
     type: String,
+    loercase:true,
     required: true,
     ref: "User",
   },
   receiver: {
     type:String,
+    lowercase:true,
     required: true,
     ref: "User",
   },
@@ -85,6 +87,17 @@ MessageSchema.statics.SendFile=async function (sender,receiver,chatId,message,fi
     console.log(err);
     throw new Error("Error in inserting:"+err.message);
   }
+}
+
+MessageSchema.statics.mergeMessage=async function  (Auth,user_id) {
+    try{
+      await this.updateMany({sender:Auth},{sender:user_id});
+      await this.updateMany({receiver:Auth},{receiver:user_id});
+    }
+    catch(err){
+      console.log(err);
+      throw new Error("Error in Updating"+err.message);
+    }
 }
 
 const Message = mongoose.model("Message", MessageSchema);

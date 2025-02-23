@@ -4,6 +4,7 @@ import 'dotenv/config'
 import bcrypt from 'bcrypt';
 
 import { generateAccessToken,generateRefreshToken } from "../Controllers/refreshTokController.js";
+import { type } from "os";
 const UserSchema=new Schema({
     name:{
         type: String,
@@ -31,7 +32,13 @@ const UserSchema=new Schema({
         required: true,
         minlength:6
     },
-    contacts:[{name:{type:String,trim:true,lowercase:true,},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
+    profile:{
+        type:String,
+        unique:true,
+        trim:true
+    }
+    ,
+    contacts:[{name:{type:String,trim:true,lowercase:true,}, profile:{type:String,unique:true,trim:true},Auth:{type:String,trim:true,lowercase:true,},date:{type:Date},chatId:{type:mongoose.Schema.Types.ObjectId,trim:true}}],
     notifications:[{type:String,trim:true,lowercase:true,}],
 },
 {
@@ -98,6 +105,17 @@ UserSchema.statics.login=async function ({id,password}) {
         throw new Error (err.message);
     }
 }
+
+UserSchema.statics.mergeContact = async function (Auth, user_id) {
+    const updatedUsers = await this.updateMany(
+        { "contacts.Auth": Auth },
+        { $set: { "contacts.$[elem].Auth": user_id } } , 
+        { arrayFilters: [{ "elem.Auth": Auth }] } 
+    );
+
+    console.log(updatedUsers);
+    return updatedUsers;
+};
 
 
 const User=mongoose.model("user",UserSchema);

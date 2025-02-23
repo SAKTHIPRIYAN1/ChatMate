@@ -17,10 +17,14 @@ export default {
       'blmd':{'min': '600px','max': '721px' }
       },
       animation: {
+
         wiggle: 'wiggle 1s ease-in-out infinite',
         slideRight: 'slideRight 0.5s  ease-out',
         slideLeft: 'slideRight 0.5s  ease-out forwards',
         'scale-up': 'scale-up 0.5s ease-out forwards',
+        popup: "popup 0.3s ease-out forwards",
+        popout: "popout 0.3s ease-in forwards",
+
       },
       keyframes:{
         wiggle: {
@@ -41,6 +45,16 @@ export default {
           '0%': { transform: 'scale(0)', opacity: 0 },
           '100%': { transform: 'scale(1)', opacity: 1 },
         },
+
+        popup: {
+          "0%": { opacity: 0, transform: "translateX(-10px) scale(0.95)" },
+          "100%": { opacity: 1, transform: "translateX(0) scale(1)" },
+        },
+        popout: {
+          "0%": { opacity: 1, transform: "translateX(0) scale(1)" },
+          "100%": { opacity: 0, transform: "translateX(10px) scale(0.95)" },
+        },
+
       }
     },
   },

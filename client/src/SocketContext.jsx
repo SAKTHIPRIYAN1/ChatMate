@@ -66,7 +66,7 @@ export const SocketProvider = ({ children }) => {
                 console.log("Save request came from",sender);
 
                 toast.custom((t) => (
-                    <div className="flex  items-center  p-2 sm:text-[15px] md:text-[18px]  backdrop-blur-lg  bg-slate-800/80 rounded-md">
+                    <div className="flex  items-center  py-[0.3rem] px-2 sm:text-[15px] md:text-[18px]  backdrop-blur-lg  bg-slate-800/80 rounded-md">
                             <span className="flex items-center p-2 ">        
                                 Save Request from <b className=' ml-[4px] font-bold text-teal-400 '>{" "+sender}</b>
                             </span>

@@ -11,6 +11,7 @@ import { setUserAuth,setUser } from "../Store/AuthUser";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_BACKURL;
 import MainMessageContain from "./MainMessage";
+import LoginRemainder from "./LoginRemainder";
 const HomeComponent=()=>{
 
     return( 

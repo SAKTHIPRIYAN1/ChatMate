@@ -13,7 +13,9 @@ const initialState={
     Auth:null,
     AnnonPass:null,
     load:true,
+    profilePic:null,
 }
+
 export const getUserData = createAsyncThunk(
     'User/getUserData', // Name of the thunk
     async (_, { dispatch, rejectWithValue }) => {
@@ -52,27 +54,46 @@ export const getUserData = createAsyncThunk(
       }
 });
 
+// for generate RndomPass...
+export const generateAuthAsync = createAsyncThunk("auth/generate", async () => {
+  return await RandomPass.GenerateRandomPass();
+});
+
+
 const User=createSlice({
     name:"User",
     initialState,
     reducers:{
         setUser:(state,action)=>{
             // console.log(action.payload);
-           const {email,id,name,accessToken}=action.payload;
+           const {email,id,name,accessToken,profile}=action.payload;
            state.email=email;
           
            state.name=name.toLowerCase();
            state.id=id;
            state.accessToken=accessToken;
            state.isLoggedin=true;
+           state.profilePic=profile;
+           console.log(profile);
         },
         setUserAuth:(state,action)=>{
             console.log(action.payload);
             state.Auth=action.payload;
             // console.log("Auth:",state.Auth);
         },
+        setNameAccess:(state,action)=>{
+          state.name=action.payload.name;
+          state.accessToken=action.payload.accessToken;
+        },
         ClearUser:(state,action)=>{
-            state=initialState;
+         state.email=null;
+          state.id=null;
+          state.name=null;
+          state.accessToken=null;
+          state.isLoggedin=false;
+          state.Auth=null;
+         state.AnnonPass=null;
+          state.load=true;
         }
     },
     extraReducers: (builder) => {
@@ -96,9 +117,13 @@ const User=createSlice({
             }
           })
           .addCase(getUserData.rejected, (state, action) => {
-           state.load=false;
-            state.Auth=RandomPass.GenerateRandomPass();
-          });
+            state.load=false;
+          })
+          .addCase(generateAuthAsync.fulfilled, (state, action) => {
+            const {accessToken,Auth}=action.payload;
+            state.accessToken=accessToken;
+            state.Auth=Auth;
+          })
       },
 });
 

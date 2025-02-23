@@ -47,7 +47,7 @@ RandomRoute.get("/",async(req,res)=>{
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
             secure: true,
-            maxAge: 60 * 60 * 1000 *1000, // 10 days
+            maxAge: 60 * 60 * 1000 *50000, // 10 days
             sameSite: 'none',
         });
         return res.status(200).json({ Auth, accessToken });

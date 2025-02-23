@@ -22,12 +22,19 @@ import requestRoute from "./Routes/requestRoute.js";
 import rr from "./Routes/RequestActionsRoute.js";
 import ContactRoute from "./Routes/ContactRoute.js";
 import MessageRouter from "./Routes/MessageRoute.js";
+import LogoutRoute from "./Routes/logoutRoute.js";
+import profileRoute from "./Routes/profileRoute.js";
 
 import { changePasswordRequest,ConfirmPassword } from "./Controllers/LoginController.js";
 
 import PreAuthRoute from "./SimpleRoutes.js";
 import RandomRoute from "./Routes/RandomPassRoute.js";
 // for refresh Token ......
+
+// Define __dirname equivalent for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 
 // og routess..
@@ -37,30 +44,36 @@ const ReqActionRoute=rr.ReqActionRoute
 
 const whitelist = ['http://localhost:5173'];
 
-// Configure CORS options
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
+    if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"], // Block unexpected methods
+  allowedHeaders: ["Content-Type"], // Restrict headers
+  exposedHeaders: ["Content-Length"],
 };
 
+app.use("/uploads/profilePic", express.static(path.join(__dirname, "uploads/profilePic")));
+
+// Apply CORS middleware globally
 app.use(cors(corsOptions));
+
+
 app.use(cookieParser());
 app.use(bodyParser.json());
+
 
 
 
 // connecting databse with the backend...
 connectToDb();
 
-// Define __dirname equivalent for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -82,12 +95,14 @@ app.use((req, res, next) => {
 
 // routers....
 // connecting the routes with the router....
+app.use('/preauth',PreAuthRoute);
 app.use('/request',ReqActionRoute);
 app.post('/refresh-token',refreshTokenHandler);
 app.use('/file',fileRoute);
 app.use('/signUp',SignUpRoute);
 app.use('/login',loginRoute);
-app.use('/preauth',PreAuthRoute);
+app.use('/logout',LogoutRoute);
+app.use('/profile',profileRoute);
 app.use('/saveUser',requestRoute);
 app.use('/contact',ContactRoute);
 app.use('/Message',MessageRouter);
@@ -122,6 +137,11 @@ app.get('/uploads/:filename', (req, res) => {
 
 app.post("/changePassword",changePasswordRequest);
 app.post("/confirmPassword",ConfirmPassword);
+
+app.use((req, res, next) => {
+  console.log("404 Error - Route not found:", req.url);
+  res.status(404).send("Route not found");
+});
 
 
 

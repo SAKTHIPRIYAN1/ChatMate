@@ -71,6 +71,7 @@ const OtpPage = () => {
     stat(); 
   }, [navigate]);
   
+    const Auth =useSelector((store)=>store.User.Auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +80,7 @@ const OtpPage = () => {
         try {
             setLoading(true);
             setOtp(new Array(6).fill(""));
-            let res=await axios.post(VITE_BACKURL+'/signUp/verify-otp',{otp:JSON.stringify(otp)},{
+            let res=await axios.post(VITE_BACKURL+'/signUp/verify-otp',{otp:JSON.stringify(otp),Auth},{
                 withCredentials: true,
             });
             setLoading(false);
