@@ -4,6 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_BACKURL;
 import { selectAuth } from "./AuthUser";
+import { act } from "react";
 const initialState={
     name:null,
     Auth:null,
@@ -11,6 +12,8 @@ const initialState={
     load:false,
     profilePic:null,
     Messages:[],
+    isEmpty:true,
+    isAboutOpen:false,
 };
 
 
@@ -80,11 +83,37 @@ const ContactSlice= createSlice(
             state.name=action.payload.name;
             state.Auth=action.payload.Auth;
             state.chatId=action.payload.chatId;
+            console.log("setting Contact!!!");
+            console.log("pld:::action:",action.payload,action.payload.profile);
             state.profilePic=action.payload.profile;
+            state.isEmpty=false;
         },
         setMessages:(state,action)=>{
             state.Messages.push(action.payload);
             console.log(action.payload);
+        },
+        clearMess:(state,action)=>{
+            state.Messages=[];
+        }
+        ,clearContact: (state) => {
+            state.name = null;
+            state.Auth = null;
+            state.chatId = null;
+            state.load = false;
+            state.profilePic = null;
+            state.Messages = [];
+            state.isEmpty = true;
+        },
+        alterAboutOpen:(state,action)=>{
+            state.isAboutOpen=!state.isAboutOpen;
+            
+        },
+        setAbout:(state,action)=>{
+            state.isAboutOpen=true;
+            console.log(state.isAboutOpen);
+        },
+        setConName:(state,action)=>{
+            state.name=action.payload;
         }
     },
 
@@ -107,5 +136,5 @@ const ContactSlice= createSlice(
     }
    }
 );
-export const {setContact,setMessages}=ContactSlice.actions;
+export const {setContact,setAbout,setConName,alterAboutOpen,setMessages,clearMess,clearContact}=ContactSlice.actions;
 export default ContactSlice.reducer;

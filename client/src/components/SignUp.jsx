@@ -55,7 +55,7 @@ const SignForm=()=>{
             if(pass.length <6){
                 toast.error("PassWord must be atleast of 6 length", {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',
@@ -74,7 +74,7 @@ const SignForm=()=>{
                 setLoading(false);
                 toast.success(res.data.msg, {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',
@@ -89,7 +89,7 @@ const SignForm=()=>{
                 if(err.response && err.response.data){
                     toast.error(err.response.data.msg, {
                         duration: 3000,
-                        position: 'top-right',
+                        position: 'bottom-left',
                         
                           style: {
                           color: '#fff',

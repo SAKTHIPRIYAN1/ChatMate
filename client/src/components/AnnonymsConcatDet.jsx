@@ -117,7 +117,7 @@ const AnnonDes=()=>{
             console.log(res.data.msg);
             toast.success(res.data.msg, {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -130,7 +130,7 @@ const AnnonDes=()=>{
         catch(err){
                 toast.error(err.response.data.msg, {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',

@@ -2,6 +2,8 @@ import User from "../Models/UserModel.js";
 import AnnonUser from "../Models/AnnonModel.js";
 import Chat from '../Models/chatModel.js'
 import Message from '../Models/messageModel.js';
+import { getIo,getSocket } from "../socket.js";
+import contactRequest from "../Models/requestModel.js";
 
 const GetAllContact=async (req,res)=>{
     const {Auth}=req.params;
@@ -27,17 +29,28 @@ const GetAllContact=async (req,res)=>{
 export const BlockContact=async(req,res)=>{
     const {userAuth,RecipAuth}=req.body;
     console.log(userAuth,RecipAuth);
-    try{
-        let chat = await Chat.findOne({ participants: [userAuth, RecipAuth] });
 
+        const io=getIo();
+        const recipSocket=getSocket(RecipAuth);
+        const sendSocket=getSocket(userAuth);
+
+        console.log('RecipSock:',recipSocket);
+
+        io.to(recipSocket).emit("Blocked",{contact:userAuth});
+        io.to(sendSocket).emit("Blocked",{contact:RecipAuth});
+
+    
+    try{
+        await contactRequest.deleteOne({sendAuth:userAuth,recvAuth:RecipAuth});
+        await contactRequest.deleteOne({sendAuth:RecipAuth,recvAuth:userAuth});
+        
+        let chat = await Chat.findOne({ participants: [userAuth, RecipAuth] });
         if (!chat) {
             chat = await Chat.findOne({ participants: [RecipAuth, userAuth] });
         }
-
         if (!chat) {
             throw new Error("Chat ID not found");
         }
-
         const _id = chat._id;
 
         // del teh Chat from the Id..
@@ -84,20 +97,25 @@ const deleteMessages=async (chatId)=>{
     await Message.deleteMany({ chatId});
 }
 
-
 export const deleteMessageCon=async(req,res)=>{
     const {userAuth,RecipAuth}=req.body;
+        console.log(userAuth,RecipAuth);
+        const io=getIo();
+        const recipSocket=getSocket(RecipAuth);
+        const sendSocket=getSocket(userAuth);
+        console.log('RecipSock:',recipSocket);
+        console.log("Del Socket transmitted!!");
+        io.to(recipSocket).emit("Deleted",{contact:userAuth});
+        io.to(sendSocket).emit("Deleted",{contact:RecipAuth});
+    
     try{
             let chat = await Chat.findOne({ participants: [userAuth, RecipAuth] });
-    
             if (!chat) {
                 chat = await Chat.findOne({ participants: [RecipAuth, userAuth] });
             }
-    
             if (!chat) {
                 throw new Error("Chat ID not found");
             }
-    
             const _id = chat._id;
     
             // deleting the Messages with the Chat ID...

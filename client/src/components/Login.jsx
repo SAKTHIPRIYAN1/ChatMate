@@ -81,7 +81,7 @@ const LoginPart=()=>{
                 console.log(err.response.data);
                 toast.error(err.response.data.msg, {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',

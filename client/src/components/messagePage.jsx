@@ -17,12 +17,12 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { addNewAnnonMess,clearAnnonMess } from "../Store/AnnonymousMessages";
 import { ClearAnnonRecip } from "../Store/AnonymousUser";
-
+import { clearMess,clearContact } from '../Store/ContactSlice';
 import { setDesVisible } from '../Store/AnnonDesslice';
 // Arrow....
 import { ArrowLeftIcon } from "./svg";
 
-
+import { makeToast } from '../simpleFunctions';
 
 // import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -45,9 +45,11 @@ import MainChat from "./MainChat";
 // redierct..
 import useRegRedirect from "../CustomHooks/RegRedirectMethod";
 
+import { setAbout } from '../Store/ContactSlice';
 
 // my emojipicker...
 import MyEmojiPicker from "./EmojiPicker";
+import toast from 'react-hot-toast';
 
 const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 
@@ -84,7 +86,10 @@ const MessagePart=()=>{
     
     
     return (   
+        <>
             <MessComp isAnnon={isAnnon}/>
+            
+        </>   
       );
 
    
@@ -101,6 +106,7 @@ export const MessComp=({isAnnon})=>{
         <div className="h-[100vh]   w-[100vw] fixed right-0 left-0 top-0  gap-0 border-none  bg  p-0 flex">
             <ConcatDescrip  />
             <MessContain isAnnon={isAnnon}/>
+            
         </div>
         
     )
@@ -132,7 +138,7 @@ export const MessContain=({isAnnon})=>{
 
 
 
-export const MessHead=({ChatPerson,noTimer})=>{
+export const MessHead=({ChatPerson,noTimer,isAbout})=>{
 
     const navigate=useNavigate();
     const {setLoading}=useLoading();
@@ -141,8 +147,9 @@ export const MessHead=({ChatPerson,noTimer})=>{
     const dispatch=useDispatch();
     const sockid=useSelector((store)=>store.UserReg.socketId)
 
+
     const handleNext=()=>{
-        setLoading(true);
+        setLoading(true);{setOptions(!Options);}
         ChangePerson(setLoading);
     }
 
@@ -156,6 +163,11 @@ export const MessHead=({ChatPerson,noTimer})=>{
         dispatch(setDesVisible(true))
     }
 
+    const handleClick=()=>{
+        if(isAbout){
+            dispatch(setAbout());
+        }
+    }
     return(
         <div className=" flex select-none transparent_tone justify-between flex-row w-full px-3 h-[45px] ">
             <div className="h-full fill-white hidden sm:flex sm:mr-3 hover:cursor-pointer   active:scale-90 transition-all items-center" onClick={()=>{navigate("/register");handleRedirect();}}>
@@ -163,8 +175,8 @@ export const MessHead=({ChatPerson,noTimer})=>{
                 <ArrowLeftIcon />
                 </div>
             </div>
-           <div className="h-[100%] w-[122px] flex-1 justify-start flex items-center "   > 
-                <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate"  onClick={()=>SetDesVisi()}  >
+           <div onClick={handleClick} className="h-[100%] w-[122px] flex-1 justify-start flex items-center "   > 
+                <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate">
                     {ChatPerson}
                 </h1>
            </div>
@@ -186,7 +198,7 @@ const Contactopton=()=>{
     const showInfo=()=>{
         console.log("Info Showing");
     }
-
+    const dispatch=useDispatch();
     const deleteChat=async ()=>{
         try{
             const res=await axios.post(VITE_BACKURL+"/contact/deleteMess",{
@@ -194,22 +206,30 @@ const Contactopton=()=>{
                 RecipAuth:RecipId,
             },{withCredentials:true});
             console.log(res.data.msg);
+            dispatch(clearMess());
+            makeToast("Messages Deleted!!",200);
         }
         catch(err){
             console.log(err.response.data);
         }
     }
-
+    const navigate=useNavigate();
     const Block=async ()=>{
+        // for block we have to remove the contact id 
+        // store from the contact list and then redirct to the contact Page!!!!
+
         try{
             const res=await axios.post(VITE_BACKURL+"/contact/block",{
                 userAuth:UserId,
                 RecipAuth:RecipId,
             },{withCredentials:true});
             console.log(res.data.msg);
+            dispatch(clearContact());
+            makeToast("User Blocked",200);
+            // navigate("/contacts");
         }
         catch(err){
-            console.log(err.response.data);
+            console.log(err);
         }
     }
 

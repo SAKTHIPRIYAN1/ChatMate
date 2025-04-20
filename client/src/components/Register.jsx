@@ -106,7 +106,7 @@ const RegisterPart=()=>{
                 setLoading(false);
                 toast.error("No Pair Found", {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',

@@ -25,7 +25,7 @@ export const makeToast=(str,code)=>{
     if(code==200){
         toast.success(str, {
             duration: 3000,
-            position: 'top-right',
+            position: 'bottom-left',
             
               style: {
               color: '#fff',
@@ -37,8 +37,7 @@ export const makeToast=(str,code)=>{
 
     toast.error(str, {
         duration: 3000,
-        position: 'top-right',
-        
+        position: 'bottom-left',
           style: {
           color: '#fff',
           backgroundColor:'rgba(39, 50, 73, 0.934)',

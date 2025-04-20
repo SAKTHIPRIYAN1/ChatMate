@@ -12,16 +12,20 @@ import axios from "axios";
 import store from "../Store/store";
 import { setMessages } from "../Store/ContactSlice";
 import { GetContactMessages } from "../Store/ContactSlice";
-
-
+import { useLocation } from "react-router-dom";
+import ContactProfile from "./contactprofile";
 const VITE_BACKURL=import.meta.env.VITE_BACKURL;
 
 const MainMessageContain =()=>{
     
-    const {name,Auth}=useSelector((store)=>store.Contact);
+    const {name,Auth,isEmpty,isAboutOpen}=useSelector((store)=>store.Contact);
+    console.log(isAboutOpen);
 
     const mainRef=useRef(null);
     const [ScrollToBottom,setScrollBotttom]=useState(false);
+
+    const location = useLocation();
+    
 
     useEffect(()=>{
         if(mainRef.current){
@@ -31,8 +35,9 @@ const MainMessageContain =()=>{
               });
         }
     },[ScrollToBottom]);
-
-    if(!Auth){
+    
+    if(!Auth||isEmpty){
+       
         return (
             <div className="sm:hidden h-full flex justify-center w-[65%] items-center ">
                     <div className="bg-slate-800/80 p-1 px-3 rounded-xl">
@@ -45,11 +50,23 @@ const MainMessageContain =()=>{
     }
     
     return(
-        <div className="h-full w-[65%]  sm:w-[100%] relative ">
-        <MessHead ChatPerson={name} noTimer={true} />
-        <MainChat reff={mainRef} ChatPerson={name}  />
-        <TyperDiv  scrollfunc={setScrollBotttom} />
-        </div>
+        <>
+        
+            <div className="h-full w-[65%]  sm:w-[100%] relative ">
+                <MessHead ChatPerson={name} noTimer={true} isAbout={true} />
+                <MainChat reff={mainRef} ChatPerson={name}  />
+                <TyperDiv  scrollfunc={setScrollBotttom} />
+            </div>
+
+        {
+            isAboutOpen ?
+         <div className="w-[35%] border-l-[0.5px] border-slate-700 bg-transparent_tone">
+            <ContactProfile />
+        </div>:<></>
+        }
+            
+
+        </>
     )
 }
 

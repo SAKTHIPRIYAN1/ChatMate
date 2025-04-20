@@ -90,7 +90,7 @@ const OtpPage = () => {
             if(res.data && res.data.pass){
               toast.success("OTP verification Success", {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -105,7 +105,7 @@ const OtpPage = () => {
             dispatch(setUser(userData));
             toast.success("Sign Up Success", {
               duration: 3000,
-              position: 'top-right',
+              position: 'bottom-left',
                 style: {
                 color: '#fff',
                 backgroundColor:'rgba(39, 50, 73, 0.934)',
@@ -121,7 +121,7 @@ const OtpPage = () => {
               
             toast.error(err.response.data.msg, {
               duration: 3000,
-              position: 'top-right',
+              position: 'bottom-left',
               
                 style: {
                 color: '#fff',
@@ -207,7 +207,7 @@ const ResendOtpButton = ({func}) => {
                 console.log("resend  Otp with backend...");
                 toast.success("OTP Sent successfully.", {
                   duration: 3000,
-                  position: 'top-right',
+                  position: 'bottom-left',
                     style: {
                     color: '#fff',
                     backgroundColor:'rgba(39, 50, 73, 0.934)',
@@ -221,7 +221,7 @@ const ResendOtpButton = ({func}) => {
               if(err.response){
                 toast.error(err.response.data.msg, {
                   duration: 3000,
-                  position: 'top-right',  
+                  position: 'bottom-left',  
                     style: {
                     color: '#fff',
                     backgroundColor:'rgba(39, 50, 73, 0.934)',

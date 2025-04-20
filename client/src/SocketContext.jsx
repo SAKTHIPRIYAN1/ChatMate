@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState, useContext } from 'react';
 import { io } from 'socket.io-client';
-
+import { clearMess,clearContact } from './Store/ContactSlice';
 const SocketContext = createContext();
 
 
@@ -27,9 +27,6 @@ export const SocketProvider = ({ children }) => {
 
 
     useEffect(() => {
-
-         // Connect to the socket only if it hasn't been initialized yet
-        
         if (!socket) {
             console.log("try to connn");
             const newSocket = io(apiUrl, {
@@ -45,6 +42,20 @@ export const SocketProvider = ({ children }) => {
                 console.log("Connection Error : websocket failed to connect check your server");
             });
 
+
+            // for deleting the Messages and blocking the contact...
+            newSocket.on('Blocked',({contact})=>{
+                console.log(contact);
+                dispatch(clearContact());
+            })
+
+            
+            newSocket.on('Deleted',({contact})=>{
+                    console.log("Del Socket");
+                    console.log(contact);
+                    // dispatch(clearAnnonMess());
+                    dispatch(clearMess());
+            })
                 
 
             // for receiving normal message....
@@ -77,8 +88,8 @@ export const SocketProvider = ({ children }) => {
                             </div>
                     </div>
                   ), {
-                    position: "top-right", // Move toast to the top-right corner
-                    duration: 1000, // Toast will disappear after 4 seconds
+                    position: "bottom-left", // Move toast to the bottom-left corner
+                    duration: 1000,
                   });
             })
 

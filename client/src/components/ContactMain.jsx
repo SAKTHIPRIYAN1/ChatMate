@@ -21,6 +21,8 @@ import { setContact } from "../Store/ContactSlice";
 
 const ContactComponent=()=>{
     const Auth=useSelector((store)=>store.User.Auth);
+    const conAuth=useSelector((store)=>store.Contact.isEmpty);
+    const conName=useSelector((store)=>store.Contact.name);
     const {loading,setLoading}=useLoading();
 
     const [contacts,setContacts]=useState([]);
@@ -45,7 +47,7 @@ const ContactComponent=()=>{
         }
 
         getContacts();
-    },[Auth]);
+    },[conAuth,conName]);
 
     if(loading){
         return <Load />
@@ -98,7 +100,7 @@ const Contact=({el})=>{
         const date = new Date(timestamp);
     
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
         const day = String(date.getDate()).padStart(2, '0');
     
         const hours = String(date.getHours()).padStart(2, '0');

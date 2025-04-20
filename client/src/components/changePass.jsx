@@ -43,7 +43,7 @@ const ChangePassword = () => {
             setLoading(false);
             toast.error("Please enter your email address.", {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -58,7 +58,7 @@ const ChangePassword = () => {
         if (!emailRegex.test(email)) {
             toast.error("Please enter Vaild email address.", {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -79,7 +79,7 @@ const ChangePassword = () => {
 
             toast.success(res.data.msg, {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -94,7 +94,7 @@ const ChangePassword = () => {
                 console.log(err.response.data);
                 toast.error(err.response.data.msg, {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',
@@ -175,7 +175,7 @@ const ActualChangeContainer=()=>{
             setLoading(false);
             toast.error("Please Enter the same Password.", {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -189,7 +189,7 @@ const ActualChangeContainer=()=>{
             setLoading(false);
             toast.error("Password must atleast consists of 6 characters.", {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -211,7 +211,7 @@ const ActualChangeContainer=()=>{
 
             toast.success(res.data.msg, {
                 duration: 3000,
-                position: 'top-right',
+                position: 'bottom-left',
                 
                   style: {
                   color: '#fff',
@@ -227,7 +227,7 @@ const ActualChangeContainer=()=>{
                 console.log(err.response.data);
                 toast.error(err.response.data.msg, {
                     duration: 3000,
-                    position: 'top-right',
+                    position: 'bottom-left',
                     
                       style: {
                       color: '#fff',

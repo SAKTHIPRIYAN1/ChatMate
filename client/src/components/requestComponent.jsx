@@ -107,7 +107,7 @@ const Request=({el,func})=>{
                         </span>
                 </div>
               ), {
-                position: "top-right", 
+                position: "bottom-left", 
                 duration: 1000, 
               });
         }catch(err){
@@ -136,7 +136,7 @@ const Request=({el,func})=>{
                         </span>
                 </div>
               ), {
-                position: "top-right", // Move toast to the top-right corner
+                position: "bottom-left", // Move toast to the bottom-left corner
                 duration: 1000, // Toast will disappear after 4 seconds
               });
         }catch(err){

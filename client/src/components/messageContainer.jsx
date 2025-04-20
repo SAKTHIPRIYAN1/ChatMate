@@ -25,7 +25,17 @@ const HandleMenuOptions=(e)=>{
  }
 
 
- 
+ const getMenuPosition = (messageRef) => {
+  if (!messageRef.current) return "bottom";
+
+  const { top, bottom } = messageRef.current.getBoundingClientRect();
+  const height = window.innerHeight;
+
+  if (top < height * 0.3) return "bottom"; // Near top
+  if (bottom > height * 0.7) return "top"; // Near bottom
+  return "center"; // Somewhere in middle
+};
+
 
  const YourMessContainer = ({ Mess,Main }) => {
   const OtherUserName = useSelector((store) => store.AnnRecip.recipName);
@@ -69,14 +79,16 @@ const HandleMenuOptions=(e)=>{
       }
     };
 
+    const handleClick=()=>{
+
+    }
   
     return (
-      <div className="flex items-center justify-end p-[3px] group relative w-full cursor-pointer h-auto " ref={messageRef} >
-        <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>{setOptions(!Options);} }>
+      <div  className="flex items-center justify-end p-[3px] group relative w-full cursor-pointer h-auto " ref={messageRef} >
+        <div className="absolute text-gray-300 opacity-40 hidden group-hover:block top-2 right-2 bg-transparent" onClick={(e)=>handleClick}>
         <MenuDownIcon />
         </div>
 
-        {Options}
 
       <div className="bg-teal-950/90 p-2 rounded-md flex flex-col max-w-[55%] pr-10 sm:max-w-[75%]">
 
