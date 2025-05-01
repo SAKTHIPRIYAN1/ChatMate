@@ -44,7 +44,7 @@ const RequestComponent = () => {
 
     return (
         <div className="h-full  w-full overflow-y-scroll border-x-[1px] flex flex-col pt-2 border-x-slate-950 sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm transparent_tone">
-            <h1 className="ml-3 text-3xl font-bold">Notifications</h1>
+            <h1 className="sm:hidden ml-3 text-3xl font-bold">Notifications</h1>
             <div className="requests flex flex-col mt-3 w-full">
                
                 {data.today.length > 0 && (

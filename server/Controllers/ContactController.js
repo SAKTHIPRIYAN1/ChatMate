@@ -13,15 +13,18 @@ const GetAllContact=async (req,res)=>{
     // const {profile}=await User.findOne({user_id:data?.contacts?.id});
     if(!data){
         console.log("search in TempUserss");
-        const {contacts}=await AnnonUser.findOne({user_id:Auth});
+        console.log("Auth:",Auth);
+        const data=await AnnonUser.findOne({user_id:Auth});
 
         // fetch their Profile Pic...
-        return res.status(200).json({msg:"Data reterived SuccessFully.",data:contacts});
+        return res.status(200).json({msg:"Data reterived SuccessFully.",data:data?.contacts});
     }
     
     return res.status(200).json({msg:"Data reterived SuccessFully.",data:data.contacts});
     }
     catch(err){
+        console.log(err.message);
+        console.log(err);
         return res.status(500).json({msg:err.message});
     }
 };

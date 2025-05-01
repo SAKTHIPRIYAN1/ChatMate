@@ -37,6 +37,7 @@ RandomRoute.get("/",async(req,res)=>{
             console.log("new Temp User saved..")
         }
          catch(err){
+            console.log(err)
            return res.status(500).json({msg:err.mesage});
          }
         

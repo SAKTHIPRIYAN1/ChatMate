@@ -14,11 +14,18 @@ import { setMessages } from "../Store/ContactSlice";
 import { GetContactMessages } from "../Store/ContactSlice";
 import { useLocation } from "react-router-dom";
 import ContactProfile from "./contactprofile";
+
+import { setAlterContactOpen } from "../Store/AuthUser";
+
+
 const VITE_BACKURL=import.meta.env.VITE_BACKURL;
 
 const MainMessageContain =()=>{
     
     const {name,Auth,isEmpty,isAboutOpen}=useSelector((store)=>store.Contact);
+
+    const {isContactOpen}=useSelector((store)=>store.User);
+    
     console.log(isAboutOpen);
 
     const mainRef=useRef(null);
@@ -39,7 +46,7 @@ const MainMessageContain =()=>{
     if(!Auth||isEmpty){
        
         return (
-            <div className="sm:hidden h-full flex justify-center w-[65%] items-center ">
+            <div className=" h-full flex justify-center w-[65%] items-center ">
                     <div className="bg-slate-800/80 p-1 px-3 rounded-xl">
                         <h1>
                             Select the Contact to start Messaging
@@ -52,7 +59,7 @@ const MainMessageContain =()=>{
     return(
         <>
         
-            <div className="h-full w-[65%]  sm:w-[100%] relative ">
+            <div className={isContactOpen?"sm:absolute right-0 h-full w-[65%]   sm:w-full relative jj left-0 z-40 ":"hidden"}>
                 <MessHead ChatPerson={name} noTimer={true} isAbout={true} />
                 <MainChat reff={mainRef} ChatPerson={name}  />
                 <TyperDiv  scrollfunc={setScrollBotttom} />
@@ -60,7 +67,7 @@ const MainMessageContain =()=>{
 
         {
             isAboutOpen ?
-         <div className="w-[35%] border-l-[0.5px] border-slate-700 bg-transparent_tone">
+         <div className="w-[35%] sm:hidden border-l-[0.5px] border-slate-700 bg-transparent_tone">
             <ContactProfile />
         </div>:<></>
         }

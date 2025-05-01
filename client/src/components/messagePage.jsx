@@ -50,6 +50,7 @@ import { setAbout } from '../Store/ContactSlice';
 // my emojipicker...
 import MyEmojiPicker from "./EmojiPicker";
 import toast from 'react-hot-toast';
+import { setAlterContactOpen } from '../Store/AuthUser';
 
 const VITE_BACKURL = import.meta.env.VITE_BACKURL;
 
@@ -168,18 +169,31 @@ export const MessHead=({ChatPerson,noTimer,isAbout})=>{
             dispatch(setAbout());
         }
     }
+
+    const handleClickSm=()=>{
+        navigate("/contact-about");
+    }
+
     return(
         <div className=" flex select-none transparent_tone justify-between flex-row w-full px-3 h-[45px] ">
-            <div className="h-full fill-white hidden sm:flex sm:mr-3 hover:cursor-pointer   active:scale-90 transition-all items-center" onClick={()=>{navigate("/register");handleRedirect();}}>
-                <div className="hover:bg-teal-900/40 rounded-full p-[7px]  ">
+            <div className="h-full cursor-pointer fill-white hidden sm:flex sm:mr-3 hover:cursor-pointer   active:scale-90 transition-all items-center" onClick={()=>{dispatch(setAlterContactOpen());handleRedirect();}}>
+                <div className="sm:cursor-pointer hover:bg-teal-900/40 rounded-full p-[7px]  ">
                 <ArrowLeftIcon />
                 </div>
             </div>
-           <div onClick={handleClick} className="h-[100%] w-[122px] flex-1 justify-start flex items-center "   > 
+           <div onClick={handleClick} className="h-[100%] sm:hidden w-[122px] flex-1 justify-start flex items-center "   > 
                 <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate">
                     {ChatPerson}
                 </h1>
            </div>
+
+           <div onClick={handleClickSm} className=" hidden h-[100%] w-[122px] flex-1 justify-start sm:flex items-center "   > 
+                <h1 className="text-teal-200 font-semibold text-lg cursor-pointer truncate">
+                    {ChatPerson}
+                </h1>
+           </div>
+
+
             {
                 noTimer ?  <Contactopton/>:<ChatTimer /> 
             }

@@ -89,8 +89,12 @@ export const GetAllRequest= async (req,res)=>{
     }
     
     // Get all the requests 
-    const requests=await contactRequest.find({recvAuth:Auth});
-    // console.log(requests)
+    let requests=await contactRequest.find({recvAuth:Auth});
+    if(!requests.length){
+        requests=await contactRequest.find({sendAuth:Auth});
+        console.log(requests);
+    }
+    console.log(requests)
     return res.status(200).json({msg:"Ok!!",data:separateByDate(requests)});
 
 }

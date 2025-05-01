@@ -11,7 +11,7 @@ import { alterAboutOpen,setConName } from "../Store/ContactSlice";
 const ContactProfile = () => {
   const fileRef = useRef(null);
   const dispatch=useDispatch();
-
+  const navigate=useNavigate();
   const { name, Auth, profilePic } = useSelector((store) => store.Contact);
   const userAuth = useSelector((state) => state.User.Auth);
 console.log(userAuth)
@@ -73,13 +73,24 @@ console.log(userAuth)
     dispatch(alterAboutOpen());
   }
 
+  const handleClickSm=()=>{
+    console.log("clicked");
+    navigate("/contacts");
+  }
+
+
   return (
-    <div  className="h-full w-full border-x-[1px] flex flex-col pl-4 pt-2 border-x-slate-950 sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm transparent_tone">
+    <div  className=" hidden h-full w-full border-x-[1px] sm:flex flex-col pl-4 pt-2 border-x-slate-950 sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm transparent_tone">
       <div className="flex flex-row items-center w-full justify-start relative">
-        <div onClick={handleClick} className="fill-white p-2 rounded-full hover:cursor-pointer active:scale-90 transition-all hover:bg-slate-600 -ml-2 mr-4">
+        <div onClick={handleClick} className=" sm:hidden fill-white p-2 rounded-full hover:cursor-pointer active:scale-90 transition-all hover:bg-slate-600 -ml-2 mr-4">
           <ArrowLeftIcon />
         </div>
-        <h1 className="font-bold self-start text-xl">
+
+        <div onClick={handleClickSm} className=" hidden sm:flex fill-white p-2 rounded-full hover:cursor-pointer active:scale-90 transition-all hover:bg-slate-600 -ml-2 mr-4">
+          <ArrowLeftIcon />
+        </div>
+
+        <h1 className="font-bold sm:mt-1 self-start text-xl">
           <span className="text-teal-300">Contact Profile</span>
         </h1>
       </div>

@@ -3,6 +3,7 @@ import { useLoading } from "../components/Loadingcontext";
 import RandomPass from "../CustomHooks/RandomPass";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setContact } from "./ContactSlice";
 const apiUrl = import.meta.env.VITE_BACKURL;
 const imgUrl=import.meta.env.VITE_IMG;
 
@@ -17,13 +18,14 @@ const initialState={
     AnnonPass:null,
     load:true,
     profilePic:null,
+    isContactOpen:false,
 }
 
 export const getUserData = createAsyncThunk(
     'User/getUserData', // Name of the thunk
     async (_, { dispatch, rejectWithValue }) => {
       try {
-        console.log("Authh Call Initiated....");
+        console.log("Auth Call Initiated....");
         const res = await axios.post(
           `${apiUrl}/preauth`, 
           { Purpose: "login" }, 
@@ -104,6 +106,10 @@ const User=createSlice({
          state.AnnonPass=null;
           state.load=true;
           state.profilePic=null;
+          state.isContactOpen=false;
+        },
+        setAlterContactOpen:(state,action)=>{
+          state.isContactOpen=!state.isContactOpen;
         }
     },
     extraReducers: (builder) => {
@@ -137,6 +143,6 @@ const User=createSlice({
       },
 });
 
-export const {setUser,setUserAuth,ClearUser,setUserImage} =User.actions;
+export const {setUser,setUserAuth,ClearUser,setUserImage,setAlterContactOpen} =User.actions;
 export const selectAuth = (state) => state.User.Auth;
 export default User.reducer;

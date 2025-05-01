@@ -23,6 +23,7 @@ import { useSocket } from "../SocketContext";
 import RandomPass from "../CustomHooks/RandomPass";
 import toast from "react-hot-toast";
 import store from "../Store/store";
+import { ArrowLeftIcon } from "./svg";
 
 const apiUrl = import.meta.env.VITE_BACKURL
 
@@ -180,7 +181,10 @@ const RegisterPart=()=>{
         return(<Load/>)
 
     return(
-        
+        <>
+        <div className="absolute top-5 left-5 z-20 fill-white h-8 w-8 rounded-full  cursor-pointer active:scale-95" onClick={()=>{console.log("c;");navigate("/contacts")}}>
+            <ArrowLeftIcon />
+        </div>
         <div className="h-[600px]  max-w-[450px] w-[100%] flex flex-col  items-center  justify-center  ">
         <div className="transparent_blue pb-7 max-w-[450px] w-[100%] flex flex-col  items-center pt-8">
             <h1 className="text-[35px] text-slate-200 font-bold ">CHAT<span className='text-teal-300'>MATE</span></h1>
@@ -213,7 +217,8 @@ const RegisterPart=()=>{
         </div>
 
         </div>
-
+        </>
+        
     
     )
 }

@@ -19,6 +19,8 @@ import { useState } from "react";
 // import { Link } from "react-router-dom";
 import { setContact } from "../Store/ContactSlice";
 
+import { setAlterContactOpen } from "../Store/AuthUser";
+
 const ContactComponent=()=>{
     const Auth=useSelector((store)=>store.User.Auth);
     const conAuth=useSelector((store)=>store.Contact.isEmpty);
@@ -55,14 +57,18 @@ const ContactComponent=()=>{
 
     return (
         <>
-        <div className="h-full w-full border-x-[1px]  pt-2 border-x-slate-950  sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm  transparent_tone">
+        <div className="h-full w-full  border-x-[1px] sm:bg-transparent pt-[1px] border-x-slate-950  sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm  transparent_tone">
+                    <div className="sm:hidden">
                     <SearchBar />
+                    </div>
                     
-                <div className="contactDiv mt-2 h-full">
+                <div className="contactDiv mt-2 h-full overflow-y-scroll ">
                     {
                         contacts.map((el,ind)=>{
                             return (
+                                <>
                                 <Contact el={el} key={ind+1}/>
+                                </>
                             );
                         })
                     }
@@ -111,11 +117,12 @@ const Contact=({el})=>{
     }
 
     const handelContactClick=()=>{
+        dispatch(setAlterContactOpen());
         dispatch(setContact(el));
     }
 
     return (
-       <div className=" hover:cursor-pointer hover:bg-slate-700/30 h-max max-h-[100px] border-b-[1px] border-b-slate-700 py-[15px]    flex gap-2 pr-0 pl-0 " onClick={handelContactClick}>
+       <div  className=" cursor-pointer hover:bg-slate-700/30 h-max max-h-[100px] border-b-[1px] border-b-slate-700 py-[15px]    flex gap-2 pr-0 pl-0 " onClick={handelContactClick}>
         <div className="ml-3 flex h-max gap-2 items-center self-center  w-full"> 
             <div className="h-14 w-14 overflow-hidden rounded-full border-[1px] border-slate-500 bg-black ">
               <img src={pr? VITE_IMAGE_BACKURL+"/"+pr : svg } alt="ll" className=""/>

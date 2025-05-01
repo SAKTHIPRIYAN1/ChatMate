@@ -12,7 +12,7 @@ import ChangePassContainer from "./components/changePass";
 import RequestComponent from "./components/requestComponent";
 import HomeComponent from "./components/home";
 import ContactComponent from "./components/ContactMain";
-
+import ContactProfile  from "./components/contactprofile";
 
 import { useDispatch ,useSelector} from "react-redux";
 import { setUser,setUserAuth } from "./Store/AuthUser";
@@ -63,6 +63,7 @@ useEffect(() => {
       <Route path="/otp" element={<OtpPage />} />
       <Route path="/about" element={<AboutMe />} />
       <Route path="/popup" element={<PopUp />} />
+      <Route path="/contact-about" element={<ContactProfile />} />
     
    </Routes>
       

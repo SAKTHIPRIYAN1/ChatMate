@@ -13,12 +13,13 @@ PreAuthRoute.post("/", async(req, res) => {
         const { refreshToken } = req.cookies;
 
         if (!refreshToken) {
-            return res.status(401).json({ msg: "No refresh token provided." });
+            throw new Error("No refresh token provided.");
         }
 
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,async(err, data) => {
             if (err) {
-                return res.status(401).json({ msg: "Incorrect Token." });
+                console.log( "Incorrect Token." );
+                return res.status(401).json({ msg: "Incorrect Token." });;
             }
             finalData=data;
             console.log(data);
@@ -49,7 +50,7 @@ PreAuthRoute.post("/", async(req, res) => {
         return res.status(200).json({ msg: "Password token verified." });
     }
     }catch(err){
-        res.status(401);
+        res.status(401).json({ msg: err.message });
         console.log(err);
     }
 });
