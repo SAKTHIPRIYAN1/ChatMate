@@ -42,7 +42,8 @@ const SignUpRoute=SignUpRoutes.SignUpRoute;
 const fileRoute=frt.fileRoute;
 const ReqActionRoute=rr.ReqActionRoute
 
-const whitelist = ['http://localhost:5173'];
+const client_url=process.env.URL;
+const whitelist = [client_url];
 
 const corsOptions = {
   origin: (origin, callback) => {
