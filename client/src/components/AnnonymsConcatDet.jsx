@@ -147,6 +147,7 @@ const AnnonDes=()=>{
                 <div className="absolute left-2 fill-white hover:cursor-pointer  p-[6px] rounded-full hover:bg-teal-900/90  active:scale-90" onClick={()=>{dispatch(setDesVisible(false))}} >
                     <ArrowLeftIcon />
                 </div>
+                
                 <h1 className="font-bold  text-2xl" > USER <span className="text-teal-300" >DESCRIPTION</span></h1>
             </div>
             <div className="flex   flex-col w-full items-center mt-5 md:px-2 px-4" >

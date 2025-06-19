@@ -19,12 +19,10 @@ const BLOCK_DURATION = 60 * 60 * 1000;
 function updateHistory(userId, partnerId) {
     
     if(userId==partnerId){
-        console.log("ch111",userId,partnerId);
-        console.log("same...");
+        // console.log("ch111",userId,partnerId);
+        // console.log("same...");
         return;
     }
-
-
 
     const now = Date.now();
     userHistory[userId] = userHistory[userId] || [];
@@ -341,6 +339,7 @@ const socketSetup=(AppServer)=>{
             console.log("try_to_connect with a person with similiar taste.....")
             cls.try_to_connect(socket,io);
         });
+        
 
         socket.on("sendMess",({message,ReceiverSock})=>{
             console.log(message," has sent to ",ReceiverSock,"form",socket.id);
@@ -381,10 +380,7 @@ const socketSetup=(AppServer)=>{
             AuthSocket[Auth]=socket.id
             console.log("User tring To chat:",AuthSocket);
         })
-
     });
-
-
 
 
 }

@@ -170,8 +170,14 @@ export const MessHead=({ChatPerson,noTimer,isAbout})=>{
         }
     }
 
+    const {isLoggedin}=useSelector((store)=>store.User);
     const handleClickSm=()=>{
-        navigate("/contact-about");
+        if(isLoggedin){
+            navigate("/contact-about");
+        }
+        else{
+            SetDesVisi();
+        }
     }
 
     return(
@@ -326,6 +332,8 @@ const ContactoptionsEach=({name,func})=>{
   const handleSend=()=>{
         if(message.length<=0)
             return;
+
+        console.log("jjj");
 
         console.log(message)
         socket.emit("sendMess",{message,ReceiverSock});

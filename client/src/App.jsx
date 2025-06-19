@@ -54,6 +54,7 @@ useEffect(() => {
         <Route path="contacts" element={<ContactComponent />} />
         <Route path="profile" element={<ProfileComponent />} />
       </Route>
+      <Route path="/annonChatDet" element={<AnnonChatDet />} />
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

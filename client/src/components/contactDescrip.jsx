@@ -134,7 +134,7 @@ export const MenuBar=()=>{
            {
             isLoggedin &&
             <Link to={"/profile"}>
-                <div className="h-12 w-12 rounded-full z-30 overflow-hidden">
+                <div className="h-12 w-12 max-h-12 max-w-12  rounded-full z-30 overflow-hidden">
                                     <img src={profilePic?VITE_BACKURL+profilePic:svg} className="object-cover border-[1.5px] border-slate-300 rounded-full" />
                 </div>
             </Link>

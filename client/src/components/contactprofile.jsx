@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { alterAboutOpen,setConName } from "../Store/ContactSlice";
 
 const ContactProfile = () => {
+
+  console.log("con")
   const fileRef = useRef(null);
   const dispatch=useDispatch();
   const navigate=useNavigate();
@@ -80,7 +82,7 @@ console.log(userAuth)
 
 
   return (
-    <div  className=" hidden h-full w-full border-x-[1px] sm:flex flex-col pl-4 pt-2 border-x-slate-950 sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm transparent_tone">
+    <div  className="  h-full w-full border-x-[1px] sm:flex flex-col pl-4 pt-2 border-x-slate-950 sm:absolute sm:z-30 sm:animate-slideRight sm:bg-[#0e1118] shadow-slate-900 shadow-sm transparent_tone">
       <div className="flex flex-row items-center w-full justify-start relative">
         <div onClick={handleClick} className=" sm:hidden fill-white p-2 rounded-full hover:cursor-pointer active:scale-90 transition-all hover:bg-slate-600 -ml-2 mr-4">
           <ArrowLeftIcon />

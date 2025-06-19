@@ -82,6 +82,7 @@ export const BlockContact=async(req,res)=>{
 }
 
 
+
 const RemoveContact=async(UserAuth,RecipAuth)=>{
     const user = await User.findOneAndUpdate(
         { user_id: UserAuth },
@@ -97,7 +98,9 @@ const RemoveContact=async(UserAuth,RecipAuth)=>{
 }
 
 const deleteMessages=async (chatId)=>{
-    await Message.deleteMany({ chatId});
+   console.log(chatId);
+   const del= await Message.deleteMany({ chatId});
+   console.log("Messages Deleted:",del);
 }
 
 export const deleteMessageCon=async(req,res)=>{
@@ -119,8 +122,11 @@ export const deleteMessageCon=async(req,res)=>{
             if (!chat) {
                 throw new Error("Chat ID not found");
             }
+
+            
+            
             const _id = chat._id;
-    
+            console.log("idd:",_id)
             // deleting the Messages with the Chat ID...
             await deleteMessages(_id);
 

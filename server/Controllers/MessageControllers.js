@@ -4,7 +4,7 @@ import { getIo,getSocket } from "../socket.js";
 // import
 
 const SendMessageController=async (req,res)=>{
-
+    console.log("sending message");
     console.log("body",req.body);
     const {sender,receiver,chatId,message} =req.body;
     try{
@@ -19,6 +19,8 @@ const SendMessageController=async (req,res)=>{
         console.log("cont: "+err);
         return res.status(500).json({msg:err.message});
     }
+
+    // res.status(200).json({msg:"heyyy"});
     
 }
 

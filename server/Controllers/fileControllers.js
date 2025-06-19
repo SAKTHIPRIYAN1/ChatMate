@@ -9,6 +9,7 @@ const FileRecv=(req, res) => {
     res.json({ filePath: `/uploads/${req.file.filename}` });
 };
 
+
 const ChatFileRecv=async (req,res) =>{
 
     console.log('File uploaded:', req.file.filename);

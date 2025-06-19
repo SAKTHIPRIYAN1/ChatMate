@@ -52,12 +52,13 @@ const requestController=async (req,res)=>{
 }
 
 
-const separateByDate = (data) =>{
+const separateByDate = (data,Auth) =>{
     const result = {
       today: [],
       thisMonth: [],
       earlier: [],
-    };
+      
+      };
   
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -65,7 +66,6 @@ const separateByDate = (data) =>{
   
     data.forEach((item) => {
       const createdAt = new Date(item.createdAt);
-  
       if (createdAt >= todayStart) {
         result.today.push(item);
       } else if (createdAt >= monthStart) {
@@ -74,7 +74,9 @@ const separateByDate = (data) =>{
         result.earlier.push(item);
       }
     });
+
   
+    
     return result;
   }
   
@@ -89,13 +91,10 @@ export const GetAllRequest= async (req,res)=>{
     }
     
     // Get all the requests 
-    let requests=await contactRequest.find({recvAuth:Auth});
-    if(!requests.length){
-        requests=await contactRequest.find({sendAuth:Auth});
-        console.log(requests);
-    }
+    let requests=await contactRequest.find({$or:[{sendAuth:Auth},{recvAuth:Auth}]})
+    .sort({createdAt:-1});
     console.log(requests)
-    return res.status(200).json({msg:"Ok!!",data:separateByDate(requests)});
+    return res.status(200).json({msg:"Ok!!",data:separateByDate(requests,Auth)});
 
 }
 

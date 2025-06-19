@@ -27,7 +27,7 @@ const RequestComponent = () => {
                     { Auth },
                     { withCredentials: true }
                 );
-                // console.log("Fetched data:", res.data.data);
+                console.log("Fetched data:", res.data.data);
                 setData(res.data.data); 
             } catch (err) {
                 console.error("Error fetching requests:", err);
@@ -85,7 +85,7 @@ const RequestComponent = () => {
 
 const Request=({el,func})=>{
     const Auth = useSelector((store) => store.User.Auth);
-    // console.log(el);
+    console.log(el);
     const confirmHandler=async ()=>{
         // make the api call for the confirm he request handler.....
         try{
@@ -151,12 +151,24 @@ const Request=({el,func})=>{
             <p className="self-center">Contact request from <span className="font-bold text-teal-400">{el.sender}</span> </p>
              {
                 el.status=="pending" ?
-                <div className=" ml-1 flex gap-2 justify-between   ">
-                    <button type="button" className="hover:opacity-90 hover:cursor-pointer transition-all hover:text-white flex self-center active:scale-[0.90]  items-center justify-center rounded-full bg-teal-600 px-9 h-10  py-1 text-[15px]  font-medium w-[100%] leading-5 text-slate-200" onClick={confirmHandler}>Accept</button>
-                    <button className="hover:opacity-90 hover:cursor-pointer transition-all flex self-center active:scale-[0.90]  items-center justify-center rounded-full bg-slate-600  px-9 h-10 py-1 text-[15px] w-[100%] font-medium leading-5 text-teal-300" onClick={declineHandler}>Delete</button>
-                </div>
+
+                <>
+                    {
+                        Auth!=el.sendAuth?
+                    <div className=" ml-1 flex gap-2 justify-between   ">
+                        <button type="button" className="hover:opacity-90 hover:cursor-pointer transition-all hover:text-white flex self-center active:scale-[0.90]  items-center justify-center rounded-full bg-teal-600 px-9 h-10  py-1 text-[15px]  font-medium w-[100%] leading-5 text-slate-200" onClick={confirmHandler}>Accept</button>
+                        <button className="hover:opacity-90 hover:cursor-pointer transition-all flex self-center active:scale-[0.90]  items-center justify-center rounded-full bg-slate-600  px-9 h-10 py-1 text-[15px] w-[100%] font-medium leading-5 text-teal-300" onClick={declineHandler}>Delete</button>
+                    </div>
+                    :
+
+                    <div className=" ml-1 flex gap-2 justify-center self-center w-[50%]">
+                <button type="button" className="hover:opacity-90 hover:cursor-pointer transition-all flex self-center  items-center justify-center rounded-full bg-slate-600 px-9 h-10  py-1 text-[15px]  font-medium w-[80%] leading-5 text-teal-300" >Requested</button>
+            </div>
+
+             }
+             </>
                 :
-            <div className=" ml-1 flex gap-2 justify-center self-center w-[50%]">
+                <div className=" ml-1 flex gap-2 justify-center self-center w-[50%]">
                 <button type="button" className="hover:opacity-90 hover:cursor-pointer transition-all flex self-center  items-center justify-center rounded-full bg-slate-600 px-9 h-10  py-1 text-[15px]  font-medium w-[80%] leading-5 text-teal-300" >Accepted</button>
             </div>
              }

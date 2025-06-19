@@ -15,7 +15,7 @@ const MergeController=async (Auth,user_id)=>{
         const tempContact=await AnnonUser.findOne({user_id:Auth});
         const tempUser=await AnnonUser.findOne({user_id:Auth});
         if(!tempUser){
-            throw new Error("No User Found for Merging")
+            return;
         }
 
         const {contacts,notifications}=tempUser;

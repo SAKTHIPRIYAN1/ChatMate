@@ -112,7 +112,7 @@ const TyperDiv = ({scrollfunc}) => {
   const handleSend= async ()=>{
         if(message.length<=0)
             return;
-        console.log(message);
+        console.log("from typer..."+message);
         try{
             const res=await axios.post(`${VITE_BACKURL}/Message/sendMessage`,{
                sender:SendAuth,
@@ -123,6 +123,7 @@ const TyperDiv = ({scrollfunc}) => {
         }catch(err){
             console.log("error Occured::",err?.response?.msg);
         }finally{
+            console.log("finally called")
             dispatch(GetContactMessages());
             setMessage("");
             // scroll o bottom for every send......
