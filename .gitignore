@@ -23,5 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 .env
-server/uploads/
+server/uploads/profilePic/*
+server/uploads/files/*
+
+!server/uploads/profilePic/.gitkeep
+!server/uploads/files/.gitkeep
+
 .gitignore

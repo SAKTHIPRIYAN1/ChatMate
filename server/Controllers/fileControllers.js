@@ -6,7 +6,7 @@ import Message from "../Models/messageModel.js";
 const FileRecv=(req, res) => {
    
     console.log('File uploaded:', req.file.filename);
-    res.json({ filePath: `/uploads/${req.file.filename}` });
+    res.json({ filePath: `/uploads/files/${req.file.filename}` });
 };
 
 
@@ -21,7 +21,7 @@ const ChatFileRecv=async (req,res) =>{
     // Save in Db....
     try{
         await Message.SendFile(sender,receiver,chatId,message,filename,`/uploads/${req.file.filename}`)
-        res.json({ filePath: `/uploads/${req.file.filename}` });
+        res.json({ filePath: `/uploads/files/${req.file.filename}` });
     }
     catch(err){
         res.status(500).json({msg:err.message});

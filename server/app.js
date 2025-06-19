@@ -114,7 +114,7 @@ app.use("/getRandomPass",RandomRoute);
 // fileDownload route for messaing.........
 app.get('/uploads/:filename', (req, res) => {
   const storedFilename = req.params.filename; // Get the stored filename
-  const filePath = path.join(__dirname, 'uploads', storedFilename);
+  const filePath = path.join(__dirname, 'uploads/files', storedFilename);
 
   // Get the custom filename from the query parameter (URL query)
   const customFilename = req.query.filename || storedFilename; // Default to stored filename if not specified
